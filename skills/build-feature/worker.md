@@ -2,7 +2,7 @@
 
 You build **one issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.**
 
-Read `docs/agents/factory.yml` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
+Read `docs/agents/factory.yml` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Then read `docs/agents/factory-notes.md`: what this repository's checks, proofs and commits need beyond those values. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
 
 ## Spend few tokens
 
@@ -39,7 +39,7 @@ Implementation choices a user never sees (a table, a query, a component split) s
 
 1. Write the failing tests for one criterion, then the code that passes them.
 2. Reuse what the codebase already has (components, helpers, shared types) before adding your own.
-3. Respect the `reviewer_rules` of `docs/agents/factory.yml`: the reviewer checks them.
+3. Respect the « Reviewer rules » of `docs/agents/factory-notes.md`: the reviewer checks them.
 4. Write comments as `build.code_comments` of `docs/agents/factory.yml` says (`directives-only` when it is missing). Comments already in the code stay until their code changes.
    - `directives-only`: the only comments you add are tool directives (a lint or type-check suppression, a coverage pragma, a compiler reference). No descriptive comment, no documentation comment (TSDoc, JSDoc, docstring), no note on why: names, types and tests say what the code does, and a reason worth keeping goes in the commit message or the pull request body.
    - `documentation`: tool directives, structured documentation comments, and rarely the reason for a choice the code cannot show. Never a comment that tells what a line or a block does.
@@ -59,7 +59,7 @@ A criterion you could not prove stays unticked, and the spec keeps its ready sta
 
 ## 5. Commit, write the pull request body, hand over
 
-Commit following `build.commit_convention` and `build.commit_notes` of `docs/agents/factory.yml`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
+Commit following `build.commit_convention` of `docs/agents/factory.yml` and the « Commits » section of `docs/agents/factory-notes.md`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
 
 Write the pull request body, in the language for people, to `$(git rev-parse --git-dir)/factory/pr-body.md` (never committed): `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs and the scope limits. The shipper publishes it as it is, so keep it current each time you report.
 

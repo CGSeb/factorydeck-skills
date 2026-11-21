@@ -16,7 +16,7 @@ They are plain Markdown plus `git` and your git host's CLI (`gh` for GitHub, `gl
 
 | Skill | What it does |
 | --- | --- |
-| `setup-factory` | Explores the repository and asks you, one section at a time: GitHub or GitLab, which coding agents, spec format, labels, check command, merge policy. Writes `docs/agents/factory.yml` and `docs/agents/git-host.md` (the exact CLI commands for your host, checked against your installed CLI), plus each agent's guardrails. Run it once. |
+| `setup-factory` | Explores the repository and asks you, one section at a time: GitHub or GitLab, which coding agents, spec format, labels, check command, merge policy. Writes `docs/agents/factory.yml`, `docs/agents/factory-notes.md` and `docs/agents/git-host.md` (the exact CLI commands for your host, checked against your installed CLI), plus each agent's guardrails. Run it once. |
 | `write-spec` | Interviews you on a feature, writes a spec with testable acceptance criteria, opens its issue with its dependencies. |
 | `check-spec` | Finds every product choice a spec leaves open and gets it settled, with you or as questions on the issue. |
 | `build-feature` | The orchestrator. One background worker per buildable issue, each in its own git worktree; a fresh reviewer before any push; a cheaper shipper for push, pull or merge request and CI; gates and a serenity score decide whether it merges or goes to you. Agents without background subagents run the same roles one after another. |
@@ -100,7 +100,7 @@ Then, in your project, run `/setup-factory` (or ask your agent to « run the set
 
 ## Your project, your vocabulary
 
-Nothing about your project is hard-coded. `docs/agents/factory.yml` holds every setting in plain YAML, validated by [a JSON Schema](skills/setup-factory/factory.schema.json): edit it by hand, or from [FactoryDeck](https://github.com/CGSeb/factorydeck) once it connects your repositories. The skills read your spec headings, your labels, your check command, your models and your language from it. `docs/agents/git-host.md` holds the exact `gh` or `glab` command for each operation the skills name, so a CLI that changes a flag is fixed in one place. Keep an existing spec format; `setup-factory` maps it instead of replacing it.
+Nothing about your project is hard-coded. `docs/agents/factory.yml` holds every setting in plain YAML, validated by [a JSON Schema](skills/setup-factory/factory.schema.json): edit it by hand, or from [FactoryDeck](https://github.com/CGSeb/factorydeck) once it connects your repositories. The skills read your spec headings, your labels, your check command, your models and your language from it. What needs more than a value goes in `docs/agents/factory-notes.md`, one section each: notes on the checks, the commit convention, main branch protection and the rules for the reviewer. `docs/agents/git-host.md` holds the exact `gh` or `glab` command for each operation the skills name, so a CLI that changes a flag is fixed in one place. Keep an existing spec format; `setup-factory` maps it instead of replacing it.
 
 Instructions for agents go to `AGENTS.md`. With Claude Code, `CLAUDE.md` imports it with a single `@AGENTS.md` line.
 
