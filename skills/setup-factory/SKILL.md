@@ -39,7 +39,7 @@ Summarise what you found, then go through these sections in order, one section p
 
 Show the person both files complete before writing them; let them edit. Then:
 
-1. `docs/agents/git-host.md`: copy [git-host-github.md](git-host-github.md) or [git-host-gitlab.md](git-host-gitlab.md), fill the repository and the CLI's name, and **check every command against the installed CLI**: run `<cli> <command> --help` for each one and fix any flag it does not have. CLIs change; a wrong flag here breaks every build. Run the read-only ones for real (**List labels**, **List the queue**).
+1. `docs/agents/git-host.md`: copy [git-host-github.md](git-host-github.md) or [git-host-gitlab.md](git-host-gitlab.md), fill the repository and the CLI's name, and **check every command against the installed CLI**: run `<cli> <command> --help` for each one and fix any flag it does not have. CLIs change; a wrong flag here breaks every build. Run the read-only ones for real (**List labels**, **List the queue**). When the CLI cannot read the repository from the clone (a Windows `gh.exe` or `glab.exe` under WSL fails with « dubious ownership » or « not a git repository »), add `--repo <owner>/<repo>` (`-R` for `glab`) to every command that does not already name it.
 2. `docs/agents/factory.md`: from [factory-template.md](factory-template.md), with no placeholder left. A section with nothing to say keeps its heading and says « None ».
 3. Create the missing labels (**Create a label**).
 4. The instructions file, the project skills folder, the guardrails, the stop gate and the subagent settings for each agent in use: follow [coding-agents.md](coding-agents.md).
