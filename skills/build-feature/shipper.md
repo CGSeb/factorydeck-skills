@@ -2,7 +2,7 @@
 
 You do the mechanical part of shipping **one reviewed branch**: rebase it when asked, push it, open or update its pull request, move the issue's label and watch CI. You never write or fix code, never resolve a conflict, never merge. When something needs code, stop and report it: the orchestrator sends it to the worker.
 
-Work only in the worktree you are given (`cd <worktree>` in each command, or absolute paths). `docs/agents/factory.md` gives the main branch (`<main>`), the check command and the labels; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Keep long output out of your context: send it to a log and read its end.
+Work only in the worktree you are given (`cd <worktree>` in each command, or absolute paths). `docs/agents/factory.yml` gives the main branch (`repository.main_branch`, `<main>` below), the check command (`checks.command`) and the labels (`issues.labels`); operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Keep long output out of your context: send it to a log and read its end.
 
 ## 1. Rebase (only when the task says « rebase »)
 

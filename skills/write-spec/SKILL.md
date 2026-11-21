@@ -7,11 +7,11 @@ description: "Write a feature spec with the person and open its issue on GitHub 
 
 A spec says what a user will be able to do and how anyone can tell it is done. It is the only input a builder agent gets beside the code, so everything a user will see must be in it.
 
-`docs/agents/factory.md` gives the specs folder, the spec format, the issue conventions and the language for people; operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
+`docs/agents/factory.yml` gives the specs folder and format (`specs`), the issue conventions (`issues`) and the language for people (`people.language`); operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
 
 ## 1. Understand the feature
 
-Read the product context named in `docs/agents/factory.md`, the specs already in the folder (the latest ones and those this feature touches), and the code the feature will change. Then interview the person, in their language, one question at a time, recommended answer first:
+Read the product context (`specs.product_context`) of `docs/agents/factory.yml`, the specs already in the folder (the latest ones and those this feature touches), and the code the feature will change. Then interview the person, in their language, one question at a time, recommended answer first:
 
 - Who uses it and what can they do afterwards that they cannot do now?
 - What do they see: the screens, commands or responses, and their wording when it matters.
@@ -24,7 +24,7 @@ Too big for one pull request (more than about a day of work for a person, or sev
 
 ## 2. Write it
 
-Next number: one more than the highest in the specs folder. File name and headings follow `docs/agents/factory.md` exactly. Write in the language the existing specs use.
+Next number: one more than the highest in the specs folder. File name and headings follow `specs.file_name` and `specs.format` exactly. Write in the language the existing specs use.
 
 - **Status line**: the first value (draft).
 - **Depends-on line**: the numbers of the specs it needs, or « none ».
@@ -42,8 +42,8 @@ Run the `check-spec` skill on the new spec, with the person, before anything els
 
 The spec reaches the main branch first (commit it on a branch and merge it, or commit on the main branch if the person works that way), because a builder starts from the main branch.
 
-1. **Create an issue**: the title format from `docs/agents/factory.md`, the spec's issue label, and a body that links the spec on the main branch and repeats its depends-on line with the issue numbers (`Depends on: #12, #15`).
-2. When `docs/agents/factory.md` records dependencies as blocking links, **Add a blocker** for each spec it depends on, even one whose issue is closed: `build-feature` reads the links first. Otherwise the depends-on line is the record.
+1. **Create an issue**: the title format `issues.title`, the spec's issue label, and a body that links the spec on the main branch and repeats its depends-on line with the issue numbers (`Depends on: #12, #15`).
+2. When `issues.dependencies` is `blocking-links`, **Add a blocker** for each spec it depends on, even one whose issue is closed: `build-feature` reads the links first. Otherwise the depends-on line is the record.
 3. Once the spec is on the main branch with its checked line, **Move an issue's labels** to add the ready label. Before that, a builder would start from a main branch that lacks the spec.
 
 Done when the issue exists with its labels and dependencies, and the person has the link.

@@ -2,7 +2,7 @@
 
 You build **one issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.**
 
-Read `docs/agents/factory.md` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
+Read `docs/agents/factory.yml` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
 
 ## Spend few tokens
 
@@ -25,7 +25,7 @@ cd <worktree> && git status --short --branch && mkdir -p "$(git rev-parse --git-
 
 Then set the worktree up the way the repository does (install dependencies, build what the checks need). A file git ignores, like `.env`, is not in a new worktree: link it from the main checkout (`git worktree list` names it) rather than copying secrets around. Never start or reset a shared service (a database, a dev server) the main checkout uses; start your own when the checks need one and the repository allows it.
 
-If the setup or a check fails because a shared service does not answer (the services check of `docs/agents/factory.md` fails), **stop at once**: write no code, change no label, comment nothing on the issue. Report `blocked` with `"blocked_reason": "services-down: <the error>"`. The orchestrator asks the person to start it and resumes you; never start it yourself.
+If the setup or a check fails because a shared service does not answer (`checks.services.check` of `docs/agents/factory.yml` fails), **stop at once**: write no code, change no label, comment nothing on the issue. Report `blocked` with `"blocked_reason": "services-down: <the error>"`. The orchestrator asks the person to start it and resumes you; never start it yourself.
 
 ## 2. Understand before coding
 
@@ -39,9 +39,9 @@ Implementation choices a user never sees (a table, a query, a component split) s
 
 1. Write the failing tests for one criterion, then the code that passes them.
 2. Reuse what the codebase already has (components, helpers, shared types) before adding your own.
-3. Respect the rules for the reviewer in `docs/agents/factory.md`: the reviewer checks them.
+3. Respect the `reviewer_rules` of `docs/agents/factory.yml`: the reviewer checks them.
 4. Stay inside the spec: note anything else in the pull request body instead of building it.
-5. Leave the protected paths of `docs/agents/factory.md` alone. If the feature truly needs a change there, make it and say why in the pull request body: a person will merge it.
+5. Leave the `protected_paths` of `docs/agents/factory.yml` alone. If the feature truly needs a change there, make it and say why in the pull request body: a person will merge it.
 
 ## 4. Prove it
 
@@ -55,7 +55,7 @@ A criterion you could not prove stays unticked, and the spec keeps its ready sta
 
 ## 5. Commit, write the pull request body, hand over
 
-Commit following the commit convention of `docs/agents/factory.md`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
+Commit following `build.commit_convention` and `build.commit_notes` of `docs/agents/factory.yml`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
 
 Write the pull request body, in the language for people, to `$(git rev-parse --git-dir)/factory/pr-body.md` (never committed): `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs and the scope limits. The shipper publishes it as it is, so keep it current each time you report.
 

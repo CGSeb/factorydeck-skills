@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Adapted from Lauren Tan's pstack (MIT). See `CREDITS.md`.
 
-Every serious project needs a scripted way to drive the real app and prove behaviour: launch it, exercise a feature the way a user would, and capture evidence. This skill generates that as a project-local skill, `<skills folder>/verify-<app>/`, tailored to the repository. `<skills folder>` is the project skills folder of `docs/agents/factory.md`; without that file, `.agents/skills/` (read by Codex and a growing number of agents), or `.claude/skills/` when Claude Code is the only agent. Used by Claude Code and another agent: keep it in `.agents/skills/` and link `.claude/skills/verify-<app>` to it. You write the output for the next agent, not for a human: it will be read cold, mid-task, by an agent that has never seen the app. `build-feature` workers use it to prove each criterion.
+Every serious project needs a scripted way to drive the real app and prove behaviour: launch it, exercise a feature the way a user would, and capture evidence. This skill generates that as a project-local skill, `<skills folder>/verify-<app>/`, tailored to the repository. `<skills folder>` is the project skills folder of `docs/agents/factory.yml`; without that file, `.agents/skills/` (read by Codex and a growing number of agents), or `.claude/skills/` when Claude Code is the only agent. Used by Claude Code and another agent: keep it in `.agents/skills/` and link `.claude/skills/verify-<app>` to it. You write the output for the next agent, not for a human: it will be read cold, mid-task, by an agent that has never seen the app. `build-feature` workers use it to prove each criterion.
 
 ## 1. Interview the repo, not the user
 
@@ -47,4 +47,4 @@ If you proved it in a stand-in for the real target (a container in place of a fr
 
 ## 5. Wire it and offer the maintenance loop
 
-Set `Verification skill: verify-<app>` in `docs/agents/factory.md` when it exists, so `build-feature` workers use it. Point the person at `/maintain-verification-skill` for keeping the map honest as the app changes; suggest a cadence only if they ask.
+Set `checks.verification_skill` to `verify-<app>` in `docs/agents/factory.yml` when it exists, so `build-feature` workers use it. Point the person at `/maintain-verification-skill` for keeping the map honest as the app changes; suggest a cadence only if they ask.

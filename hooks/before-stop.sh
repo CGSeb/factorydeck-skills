@@ -1,8 +1,8 @@
 #!/bin/sh
 # Stop gate of factorydeck-skills. Before an agent stops with work that is not on the main
-# branch yet, runs the check command of docs/agents/factory.md and sends the agent back while
-# it fails, at most MAX_BLOCKS times in a row so that a run always ends. Does nothing in a
-# repository without that file, or when it sets "Stop gate: off".
+# branch yet, runs checks.command of docs/agents/factory.yml and sends the agent back while it
+# fails, at most MAX_BLOCKS times in a row so that a run always ends. Does nothing in a
+# repository without that file, or when it sets checks.stop_gate to false.
 set -u
 
 MAX_BLOCKS=3
@@ -19,23 +19,40 @@ dir=$(field cwd)
 [ -n "$dir" ] || dir=${CLAUDE_PROJECT_DIR:-$PWD}
 cd "$dir" 2>/dev/null || exit 0
 root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
-config="$root/docs/agents/factory.md"
+config="$root/docs/agents/factory.yml"
 [ -f "$config" ] || exit 0
 
+# Reads « section: / key: value » from plain block YAML: a top-level section, then a key
+# indented by two spaces. Strips one level of quotes and a trailing comment.
 setting() {
-  sed -n "s/^- $1:[[:space:]]*//p" "$config" | head -n 1 |
-    sed 's/[[:space:]]*$//; s/^`\(.*\)`$/\1/'
+  awk -v section="$1" -v key="$2" -v q="'" '
+    /^[^[:space:]#]/ { current = $0; sub(/:.*/, "", current); next }
+    current == section && index($0, "  " key ":") == 1 {
+      value = substr($0, length(key) + 4)
+      sub(/^[[:space:]]+/, "", value)
+      first = substr(value, 1, 1)
+      if (first == "\"" || first == q) {
+        value = substr(value, 2)
+        end = index(value, first)
+        if (end > 0) value = substr(value, 1, end - 1)
+      } else {
+        sub(/[[:space:]]+#.*$/, "", value)
+      }
+      sub(/[[:space:]]+$/, "", value)
+      print value
+      exit
+    }' "$config"
 }
 
-case $(setting 'Stop gate') in
-  off | Off | OFF) exit 0 ;;
+case $(setting checks stop_gate) in
+  false | False | FALSE | no | off) exit 0 ;;
 esac
-check=$(setting 'Check command')
+check=$(setting checks command)
 case $check in
   '' | *'<'*'>'*) exit 0 ;;
 esac
 
-main=$(setting 'Main branch')
+main=$(setting repository main_branch)
 dirty=$(git status --porcelain 2>/dev/null)
 ahead=$(git rev-list --count "origin/${main:-main}..HEAD" 2>/dev/null || echo 0)
 if [ -z "$dirty" ] && [ "$ahead" -eq 0 ]; then

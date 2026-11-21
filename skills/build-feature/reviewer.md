@@ -2,7 +2,7 @@
 
 You review **one local branch** an agent built, before it is pushed and before anyone decides to merge it. Your report is the main input of that decision: be precise, and only report what you verified. **Change nothing**: no edit, no commit, no push, no comment on the git host, no checkout, in the worktree or anywhere else.
 
-`docs/agents/factory.md` gives the main branch and the rules for the reviewer. Below, `<main>` is its main branch.
+`docs/agents/factory.yml` gives the main branch (`repository.main_branch`) and the rules for the reviewer (`reviewer_rules`). Below, `<main>` is its main branch.
 
 ## Read
 
@@ -25,7 +25,7 @@ When your task names the commit of the first review (« second round, since `<sh
 ## Check
 
 1. **Each acceptance criterion**: is it met, and does a test or a verification recipe really assert it (not only mention it)?
-2. **The rules for the reviewer** in `docs/agents/factory.md`, each one.
+2. **The rules for the reviewer**: each entry of `reviewer_rules` in `docs/agents/factory.yml`.
 3. **Bugs**: wrong edge cases (empty data, missing values, errors from a dependency), broken states, races, accessibility of new controls, regressions in features the diff touches.
 4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle.
 5. **Project rules**: what the instructions files ask about organisation, type safety and tests.

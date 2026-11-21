@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/CGSeb/factorydeck-skills/main/skills/setup-factory/factory.schema.json",
+  "title": "factorydeck-skills configuration",
+  "description": "docs/agents/factory.yml: how a repository runs its agent workflow.",
+  "type": "object",
+  "required": ["version", "repository", "agents", "people", "checks", "specs", "issues", "build", "protected_paths", "reviewer_rules"],
+  "additionalProperties": false,
+  "$defs": {
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "model": {
+      "description": "A model name, session-default, or one name per coding agent.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 }, "minProperties": 1 }
+      ]
+    }
+  },
+  "properties": {
+    "version": { "const": 1 },
+    "repository": {
+      "type": "object",
+      "required": ["git_host", "git_host_commands", "main_branch", "merge_method"],
+      "additionalProperties": false,
+      "properties": {
+        "git_host": { "enum": ["github", "gitlab"] },
+        "git_host_commands": { "$ref": "#/$defs/nonEmpty" },
+        "main_branch": { "$ref": "#/$defs/nonEmpty" },
+        "merge_method": { "enum": ["squash", "merge", "rebase"] }
+      }
+    },
+    "agents": {
+      "type": "object",
+      "required": ["used", "instructions_file", "skills_folder", "models"],
+      "additionalProperties": false,
+      "properties": {
+        "used": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" }, "minItems": 1, "uniqueItems": true },
+        "instructions_file": { "$ref": "#/$defs/nonEmpty" },
+        "skills_folder": { "$ref": "#/$defs/nonEmpty" },
+        "models": {
+          "type": "object",
+          "required": ["spec_check", "worker", "reviewer", "shipper"],
+          "additionalProperties": false,
+          "properties": {
+            "spec_check": { "$ref": "#/$defs/model" },
+            "worker": { "$ref": "#/$defs/model" },
+            "reviewer": { "$ref": "#/$defs/model" },
+            "shipper": { "$ref": "#/$defs/model" }
+          }
+        }
+      }
+    },
+    "people": {
+      "type": "object",
+      "required": ["language", "hand_work_to"],
+      "additionalProperties": false,
+      "properties": {
+        "language": { "$ref": "#/$defs/nonEmpty" },
+        "hand_work_to": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "required": ["command", "stop_gate", "verification_skill", "services"],
+      "additionalProperties": false,
+      "properties": {
+        "command": { "$ref": "#/$defs/nonEmpty" },
+        "stop_gate": { "type": "boolean" },
+        "verification_skill": { "$ref": "#/$defs/nonEmpty", "description": "A skill name such as verify-app, or none." },
+        "services": {
+          "type": "object",
+          "required": ["check", "start", "manual_start"],
+          "additionalProperties": false,
+          "properties": {
+            "check": { "$ref": "#/$defs/nonEmpty" },
+            "start": { "$ref": "#/$defs/nonEmpty" },
+            "manual_start": { "$ref": "#/$defs/nonEmpty" }
+          }
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "specs": {
+      "type": "object",
+      "required": ["folder", "file_name", "product_context", "format"],
+      "additionalProperties": false,
+      "properties": {
+        "folder": { "$ref": "#/$defs/nonEmpty" },
+        "file_name": { "$ref": "#/$defs/nonEmpty" },
+        "product_context": { "$ref": "#/$defs/nonEmpty" },
+        "format": {
+          "type": "object",
+          "required": ["status_line", "status_values", "depends_on_line", "checked_line", "sections"],
+          "additionalProperties": false,
+          "properties": {
+            "status_line": { "$ref": "#/$defs/nonEmpty" },
+            "status_values": {
+              "type": "object",
+              "required": ["draft", "ready", "done"],
+              "additionalProperties": false,
+              "properties": {
+                "draft": { "$ref": "#/$defs/nonEmpty" },
+                "ready": { "$ref": "#/$defs/nonEmpty" },
+                "done": { "$ref": "#/$defs/nonEmpty" }
+              }
+            },
+            "depends_on_line": { "$ref": "#/$defs/nonEmpty" },
+            "checked_line": { "$ref": "#/$defs/nonEmpty" },
+            "sections": {
+              "type": "object",
+              "required": ["user_goal", "criteria", "rules", "proof", "out_of_scope"],
+              "additionalProperties": false,
+              "properties": {
+                "user_goal": { "$ref": "#/$defs/nonEmpty" },
+                "criteria": { "$ref": "#/$defs/nonEmpty" },
+                "rules": { "$ref": "#/$defs/nonEmpty" },
+                "proof": { "$ref": "#/$defs/nonEmpty" },
+                "out_of_scope": { "$ref": "#/$defs/nonEmpty" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "object",
+      "required": ["title", "dependencies", "labels"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "$ref": "#/$defs/nonEmpty" },
+        "dependencies": { "enum": ["blocking-links", "depends-on-line"] },
+        "labels": {
+          "type": "object",
+          "required": ["spec", "ready", "working", "needs_spec", "review", "blocked"],
+          "additionalProperties": false,
+          "properties": {
+            "spec": { "$ref": "#/$defs/nonEmpty" },
+            "ready": { "$ref": "#/$defs/nonEmpty" },
+            "working": { "$ref": "#/$defs/nonEmpty" },
+            "needs_spec": { "$ref": "#/$defs/nonEmpty" },
+            "review": { "$ref": "#/$defs/nonEmpty" },
+            "blocked": { "$ref": "#/$defs/nonEmpty" }
+          }
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "required": ["parallel_workers", "branch_name", "commit_convention", "pull_request_title", "auto_merge", "serenity_threshold", "main_branch_protection"],
+      "additionalProperties": false,
+      "properties": {
+        "parallel_workers": { "type": "integer", "minimum": 1 },
+        "branch_name": { "$ref": "#/$defs/nonEmpty" },
+        "commit_convention": { "$ref": "#/$defs/nonEmpty" },
+        "pull_request_title": { "$ref": "#/$defs/nonEmpty" },
+        "commit_notes": { "type": "string" },
+        "auto_merge": { "type": "boolean" },
+        "serenity_threshold": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "main_branch_protection": { "type": "boolean" },
+        "main_branch_protection_notes": { "type": "string" }
+      }
+    },
+    "protected_paths": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" }, "uniqueItems": true },
+    "reviewer_rules": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+  }
+}

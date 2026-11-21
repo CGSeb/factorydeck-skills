@@ -7,7 +7,7 @@ description: "Check a spec for product choices it leaves open, before anyone bui
 
 A spec is ready to build when an agent can build it without inventing anything a user will see. This skill finds what is still open, gets it settled by the person, and writes the answer into the spec.
 
-`docs/agents/factory.md` gives the spec format, the labels and the language for people; operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
+`docs/agents/factory.yml` gives the spec format (`specs.format`), the labels (`issues.labels`) and the language for people (`people.language`); operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
 
 It runs in two ways:
 

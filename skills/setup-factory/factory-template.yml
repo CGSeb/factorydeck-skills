@@ -1,0 +1,107 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/CGSeb/factorydeck-skills/main/skills/setup-factory/factory.schema.json
+#
+# How this repository runs its agent workflow. The factorydeck skills and their stop gate read
+# this file; /setup-factory wrote it, and you can edit it by hand or from FactoryDeck.
+# Keep it to plain block YAML: two-space indentation, one key per line, strings in quotes
+# when they hold « : », « # » or start with a symbol. The stop gate reads repository.main_branch,
+# checks.command and checks.stop_gate with a small shell parser.
+# Values in angle brackets are placeholders that /setup-factory replaces.
+
+version: 1
+
+repository:
+  git_host: <github | gitlab>
+  # Path of the file that holds the exact CLI command of each operation the skills name in bold.
+  git_host_commands: docs/agents/git-host.md
+  main_branch: main
+  merge_method: squash # squash | merge | rebase
+
+agents:
+  # Coding agents that work on this repository: claude-code, codex, copilot, gemini-cli, cursor, or another name.
+  used: [<claude-code>]
+  instructions_file: AGENTS.md
+  skills_folder: .agents/skills/
+  # A model name the agent that runs build-feature accepts for a subagent, or session-default.
+  # With several agents, map each one to its model: { claude-code: haiku, codex: <model> }.
+  models:
+    spec_check: session-default
+    worker: session-default
+    reviewer: session-default
+    shipper: session-default
+
+people:
+  # Language of issue comments, questions, pull request bodies and score reports.
+  language: English
+  hand_work_to: "@me"
+
+checks:
+  # One command that runs format, lint, types and tests.
+  command: "<check command>"
+  stop_gate: true
+  verification_skill: none
+  services:
+    # Succeeds only when the shared services the checks need answer; none when there are none.
+    check: none
+    # Starts them, from the main checkout only.
+    start: none
+    # What the person starts by hand when the check fails. Agents never start it themselves.
+    manual_start: none
+  # Anything a builder must know to run the checks: narrower commands, a service to stub.
+  notes: ""
+
+specs:
+  folder: docs/specs/
+  file_name: NNN-short-name.md
+  product_context: none
+  # The exact text this repository uses for each part of a spec.
+  format:
+    status_line: "Status:"
+    status_values:
+      draft: draft
+      ready: ready
+      done: done
+    depends_on_line: "Depends on:"
+    checked_line: "Checked:"
+    sections:
+      user_goal: "## User goal"
+      criteria: "## Acceptance criteria"
+      rules: "## Rules"
+      proof: "## Expected proof"
+      out_of_scope: "## Out of scope"
+
+issues:
+  title: "NNN · Name"
+  dependencies: blocking-links # blocking-links | depends-on-line
+  labels:
+    spec: spec
+    ready: agent:ready
+    working: agent:working
+    needs_spec: agent:needs-spec
+    review: agent:review
+    blocked: agent:blocked
+
+build:
+  parallel_workers: 3
+  branch_name: "<the repository's branch pattern, with NNN and a short name>"
+  # The repository's own commit convention, or none.
+  commit_convention: "<the repository's convention | none>"
+  # With a squash merge, the title becomes the commit on the main branch.
+  pull_request_title: "<the convention's form for a feature, with <Subject>>"
+  # The full convention, with an example for each kind of change (feature, fix, test, docs).
+  commit_notes: ""
+  auto_merge: true
+  serenity_threshold: 80
+  main_branch_protection: <true | false>
+  main_branch_protection_notes: ""
+
+# A pull request that changes one of these needs a person, whatever its score: they hold the
+# rules the agents are graded by. The feature map of the verification skill is the exception.
+protected_paths:
+  - AGENTS.md
+  - CLAUDE.md
+  - docs/agents/
+  - "<the agents' config folders: .claude/, .codex/, .github/, …>"
+  - "<CI, lint, type, test and formatter configs>"
+
+# Project rules a reviewer must check that no tool enforces, one string each; [] when none.
+reviewer_rules: []

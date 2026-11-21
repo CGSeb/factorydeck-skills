@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 You improve the agents' **environment**, not the code. Every struggle in a session is a symptom: ask what in the repository let it happen, and propose the check, pointer, rule or tool that prevents it next time. You only **propose**; nothing changes until the person picks a candidate.
 
-Write to the person in the language for people of `docs/agents/factory.md` when it exists, otherwise in the language they use.
+Write to the person in `people.language` of `docs/agents/factory.yml` when it exists, otherwise in the language they use.
 
 ## 1. Pick the session
 
@@ -58,9 +58,9 @@ For each cause, pick its category; the category says where the fix lands.
 | Category | Symptom in the session | Fix lands in |
 | --- | --- | --- |
 | Automated check | A mistake a tool could catch (it reached review, CI or the person) | The repository's linter, type checker or tests, a CI step, an agent hook or permission rule |
-| Reviewer rule | A judgement-call mistake the reviewer let through | « Rules for the reviewer » in `docs/agents/factory.md` |
+| Reviewer rule | A judgement-call mistake the reviewer let through | `reviewer_rules` in `docs/agents/factory.yml` |
 | Navigation | Many calls to find a file, a command or a fact | A pointer from a file the agent already reads: `AGENTS.md`, a skill |
-| Procedure | An agent took a wrong path in a skill's steps, or a step was missing or vague | The skill's own file, or `docs/agents/factory.md` when the step is project-specific |
+| Procedure | An agent took a wrong path in a skill's steps, or a step was missing or vague | The skill's own file, or `docs/agents/factory.yml` when the step is project-specific |
 | Tool economy | A call returned far more than needed, or the same command ran again and again | A narrower command, a structured output, a cheaper model for the step |
 | Information access | The agent needed something it could not reach (a log, a service, a decision) | A log written to a file, a read-only access, a question a skill asks earlier |
 | Steering | `AGENTS.md`, a skill or the person's global instructions hold lines that change nothing | Delete them, or move them to a check or to the reviewer |
@@ -89,4 +89,4 @@ Then ask the person which ones to apply, and stop.
 - Work on a branch from an up-to-date main branch.
 - Before writing a skill, an `AGENTS.md`, a reviewer rule or global instructions, read [writing.md](writing.md).
 - A new check must fail on the real mistake of the session: reproduce it, watch the check go red, then fix or revert the reproduction.
-- Run the check command of `docs/agents/factory.md`. Commit and open the pull request only when the person asks.
+- Run `checks.command` of `docs/agents/factory.yml`. Commit and open the pull request only when the person asks.

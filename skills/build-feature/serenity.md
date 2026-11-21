@@ -2,7 +2,7 @@
 
 The orchestrator decides here whether a pull request merges without a person. Two parts: **gates**, facts that each hand the pull request to a person whatever the score, and the **serenity score**, how calm you would be merging it without anyone reading it.
 
-`docs/agents/factory.md` gives the auto-merge setting, the threshold, the merge method, the protected paths and the person to hand work to; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
+`docs/agents/factory.yml` gives `build.auto_merge`, `build.serenity_threshold`, `repository.merge_method`, `protected_paths` and `people.hand_work_to`; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
 
 ## 1. Gates
 
@@ -18,7 +18,7 @@ Every line below that fails is a gate failure. Write each one down in plain word
 | CI | CI ran on the head commit and every check passed (the passing values are in `docs/agents/git-host.md`) |
 | One issue | the pull request closes exactly one issue, and it carries the spec label |
 | One spec | the diff updates exactly one spec, whose status is now its done value with every criterion ticked |
-| Protected paths | no changed file is under a protected path of `docs/agents/factory.md` (the feature map of the verification skill excepted) |
+| Protected paths | no changed file is under an entry of `protected_paths` in `docs/agents/factory.yml` (the feature map of the verification skill excepted) |
 | No suppression | no added line (`+` in the diff) disables a lint rule, a type check or a test: `eslint-disable`, `oxlint-disable`, `@ts-ignore`, `@ts-expect-error`, `@ts-nocheck`, `# type: ignore`, `# noqa`, `.skip(`, `.only(`, `@Disabled`, `#[ignore]` and their equivalents in the repository's languages |
 | Migrations | no existing database migration is modified, and no added migration drops, renames, truncates, deletes rows or changes a column type |
 | No open blocker | no `blocker` or `major` finding is still open after the last review |
@@ -70,4 +70,4 @@ Gates: all passed. Review: 1 round, confidence high.
 - **Auto-merge on, every gate passes and the score reaches the threshold**: **Comment on a pull request** with the breakdown, then **Merge a pull request** with the configured method, the pull request's title and the head commit you scored. The git host refuses the merge if the branch moved since.
 - **Otherwise**: **Comment on a pull request** with the breakdown followed by the reasons the merge is refused (each gate failure, or the score below the threshold, or auto-merge off), then **Hand a pull request to the person**. The issue keeps the review label; the worker's worktree stays for follow-up.
 
-Never merge a pull request with a failed gate, and never change the threshold, a gate or `docs/agents/factory.md` to let one through.
+Never merge a pull request with a failed gate, and never change the threshold, a gate or `docs/agents/factory.yml` to let one through.

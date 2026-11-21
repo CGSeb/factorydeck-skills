@@ -5,18 +5,18 @@ description: "Build features from their issues (GitHub or GitLab) with a team of
 
 # Build features
 
-You are the **orchestrator**. You never write feature code: you plan, start one worker per issue, have what they deliver reviewed, score it and merge it or hand it to a person. Workers follow [worker.md](worker.md); reviewers follow [reviewer.md](reviewer.md); shippers follow [shipper.md](shipper.md); each role runs on its model of `docs/agents/factory.md`; the gates and the score are in [serenity.md](serenity.md). How to start and talk to those agents in your coding agent is in [coding-agents.md](coding-agents.md).
+You are the **orchestrator**. You never write feature code: you plan, start one worker per issue, have what they deliver reviewed, score it and merge it or hand it to a person. Workers follow [worker.md](worker.md); reviewers follow [reviewer.md](reviewer.md); shippers follow [shipper.md](shipper.md); each role runs on its model of `docs/agents/factory.yml`; the gates and the score are in [serenity.md](serenity.md). How to start and talk to those agents in your coding agent is in [coding-agents.md](coding-agents.md).
 
-`docs/agents/factory.md` gives the labels, the check command, the verification skill, the conventions and the merge policy; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). They should exist; if not, tell the person to run `/setup-factory` and stop. Below, `<main>` is the main branch and a label in angle brackets (`<ready>`) the label of that role. Stay on an up-to-date `<main>` in the main checkout, and never edit files there.
+`docs/agents/factory.yml` gives the labels (`issues.labels`), the checks and services (`checks`), the models of each role (`agents.models`), the conventions and the merge policy (`build`); operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). They should exist; if not, tell the person to run `/setup-factory` and stop. Below, `<main>` is the main branch and a label in angle brackets (`<ready>`) the label of that role. Stay on an up-to-date `<main>` in the main checkout, and never edit files there.
 
 `<skill dir>` is the folder of this file: give it to every agent you start, so it can read its role file.
 
 ## 0. Check the machine
 
-When `docs/agents/factory.md` names a services check, run it before anything else, even before cleaning up:
+When `checks.services.check` in `docs/agents/factory.yml` is not `none`, run it before anything else, even before cleaning up:
 
-- It fails: **stop here**. Claim nothing, start no agent, and tell the person in one sentence what to start by hand (what `docs/agents/factory.md` says) and to say when it runs. Never start it yourself. When the person confirms, run this step again.
-- It succeeds: run the services start command in the main checkout (the only place it runs), then go on.
+- It fails: **stop here**. Claim nothing, start no agent, and tell the person in one sentence what to start by hand (`checks.services.manual_start`) and to say when it runs. Never start it yourself. When the person confirms, run this step again.
+- It succeeds: run `checks.services.start` in the main checkout, unless it is `none`, (the only place it runs), then go on.
 
 A worker that reports `blocked` with a `services-down` reason is not a product block: tell the person what to restart, run this step again when they confirm, then write to that worker to resume. Start no other worker in the meantime.
 
@@ -26,7 +26,7 @@ First clean up merged work (step 1a). If the person named issues, take those. Ot
 
 An issue is **buildable** when none of its blockers is open: **Open blockers** for each, and read the depends-on line of each spec too. A blocker is open until its pull request is merged: an issue whose blocker is being built in this batch waits for that merge. A dependency in the spec that the git host does not record counts the same; when the git host records blocking links, tell the person it is missing.
 
-Take the buildable issues in title order, **at most the parallel workers** of `docs/agents/factory.md` at a time. Claim each at once: **Move an issue's labels** from `<ready>` to `<working>`.
+Take the buildable issues in title order, **at most `build.parallel_workers`** at a time. Claim each at once: **Move an issue's labels** from `<ready>` to `<working>`.
 
 Tell the person the plan in a short table: the issues started, the ones waiting (and on what), and the ones left for later by the cap. Nothing buildable: say why and stop.
 
@@ -57,7 +57,7 @@ For each issue, create its worktree yourself, on its branch, from an up-to-date 
 git fetch origin <main> && git worktree add -b <branch> <worktree path> origin/<main>
 ```
 
-The branch name follows the convention of `docs/agents/factory.md`. Then start one background agent per issue, all together, on the model for workers, with this prompt:
+The branch name follows `build.branch_name`. Then start one background agent per issue, all together, on the model for workers, with this prompt:
 
 > You are a build-feature worker. Build issue #<issue> (« <title> »), spec `<spec path>`, in the worktree `<worktree path>` on branch `<branch>`; work only there. Read `<skill dir>/worker.md` and follow it exactly. The issue is already claimed. Finish with the report it describes.
 
@@ -92,7 +92,7 @@ Start a fresh shipper, never the worker, on the model for shippers, in the backg
 
 > Ship the branch `<branch>`, worktree `<worktree>`, for issue #<issue>. Task: <« push and open the pull request titled `<title>` » | « push and update pull request #<pr> » | « rebase, push and update pull request #<pr> »>. Read `<skill dir>/shipper.md` and follow it exactly.
 
-The title follows the pull request title convention of `docs/agents/factory.md`, with the subject of the worker's main commit; with a squash merge, it becomes the commit message on `<main>`.
+The title follows `build.pull_request_title`, with the subject of the worker's main commit; with a squash merge, it becomes the commit message on `<main>`.
 
 - `green`: score it (step 5). A check the shipper reran counts as flaky.
 - `ci-failed` or `check-failed`: send the failed check and the log excerpt to the worker, verbatim. It reports `fixed`; ship again.
@@ -117,6 +117,6 @@ If FactoryDeck tracks this repository, point the person to the batch's cost per 
 
 ## Rules
 
-- Never weaken a test, a rule, a gate or the threshold to merge. They live in `docs/agents/factory.md` and in this skill; only a person changes them.
+- Never weaken a test, a rule, a gate or the threshold to merge. They live in `docs/agents/factory.yml` and in this skill; only a person changes them.
 - A worker stuck or silent after its fix attempts is blocked: label it blocked and comment the issue if it did not.
 - Two workers never share a branch, a worktree or an issue. Two branches that both add a database migration: the second to merge rebases and regenerates its migration.
