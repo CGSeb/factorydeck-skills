@@ -4,7 +4,7 @@
   "title": "factorydeck-skills configuration",
   "description": "docs/agents/factory.yml: how a repository runs its agent workflow.",
   "type": "object",
-  "required": ["version", "repository", "agents", "people", "checks", "specs", "issues", "build", "protected_paths", "reviewer_rules"],
+  "required": ["version", "repository", "agents", "people", "checks", "specs", "issues", "build", "protected_paths"],
   "additionalProperties": false,
   "$defs": {
     "nonEmpty": { "type": "string", "minLength": 1 },
@@ -17,7 +17,7 @@
     }
   },
   "properties": {
-    "version": { "const": 1 },
+    "version": { "const": 2 },
     "repository": {
       "type": "object",
       "required": ["git_host", "git_host_commands", "main_branch", "merge_method"],
@@ -76,8 +76,7 @@
             "start": { "$ref": "#/$defs/nonEmpty" },
             "manual_start": { "$ref": "#/$defs/nonEmpty" }
           }
-        },
-        "notes": { "type": "string" }
+        }
       }
     },
     "specs": {
@@ -153,15 +152,12 @@
         "branch_name": { "$ref": "#/$defs/nonEmpty" },
         "commit_convention": { "$ref": "#/$defs/nonEmpty" },
         "pull_request_title": { "$ref": "#/$defs/nonEmpty" },
-        "commit_notes": { "type": "string" },
         "code_comments": { "enum": ["directives-only", "documentation", "any"] },
         "auto_merge": { "type": "boolean" },
         "serenity_threshold": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "main_branch_protection": { "type": "boolean" },
-        "main_branch_protection_notes": { "type": "string" }
+        "main_branch_protection": { "type": "boolean" }
       }
     },
-    "protected_paths": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" }, "uniqueItems": true },
-    "reviewer_rules": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+    "protected_paths": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" }, "uniqueItems": true }
   }
 }

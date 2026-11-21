@@ -5,9 +5,11 @@
 # Keep it to plain block YAML: two-space indentation, one key per line, strings in quotes
 # when they hold « : », « # » or start with a symbol. The stop gate reads repository.main_branch,
 # checks.command and checks.stop_gate with a small shell parser.
-# Values in angle brackets are placeholders that /setup-factory replaces.
+# Values in angle brackets are placeholders that /setup-factory replaces. What needs more than a
+# value (notes on the checks, the commit convention, the rules for the reviewer) goes in
+# docs/agents/factory-notes.md.
 
-version: 1
+version: 2
 
 repository:
   git_host: <github | gitlab>
@@ -46,8 +48,6 @@ checks:
     start: none
     # What the person starts by hand when the check fails. Agents never start it themselves.
     manual_start: none
-  # Anything a builder must know to run the checks: narrower commands, a service to stub.
-  notes: ""
 
 specs:
   folder: docs/specs/
@@ -87,15 +87,12 @@ build:
   commit_convention: "<the repository's convention | none>"
   # With a squash merge, the title becomes the commit on the main branch.
   pull_request_title: "<the convention's form for a feature, with <Subject>>"
-  # The full convention, with an example for each kind of change (feature, fix, test, docs).
-  commit_notes: ""
   # Comments builders may add to the code: directives-only (tool directives only), documentation
   # (also documentation comments and a rare why), or any (the instructions files decide).
   code_comments: directives-only
   auto_merge: true
   serenity_threshold: 80
   main_branch_protection: <true | false>
-  main_branch_protection_notes: ""
 
 # A pull request that changes one of these needs a person, whatever its score: they hold the
 # rules the agents are graded by. The feature map of the verification skill is the exception.
@@ -105,6 +102,3 @@ protected_paths:
   - docs/agents/
   - "<the agents' config folders: .claude/, .codex/, .github/, …>"
   - "<CI, lint, type, test and formatter configs>"
-
-# Project rules a reviewer must check that no tool enforces, one string each; [] when none.
-reviewer_rules: []

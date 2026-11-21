@@ -6,14 +6,14 @@ disable-model-invocation: true
 
 # Set up the factory
 
-Write `docs/agents/factory.yml` and `docs/agents/git-host.md`, the configuration every other factorydeck skill reads, from what the repository already does. This is a prompt-driven setup, not a script: explore, present what you found, confirm with the person, then write.
+Write `docs/agents/factory.yml`, `docs/agents/factory-notes.md` and `docs/agents/git-host.md`, the configuration every other factorydeck skill reads, from what the repository already does. This is a prompt-driven setup, not a script: explore, present what you found, confirm with the person, then write.
 
 ## 1. Explore
 
 Read what exists; assume nothing:
 
 - `git remote -v`: the git host. A `github.com` remote is GitHub; `gitlab.com` or a self-hosted GitLab is GitLab. Check that its CLI is installed and logged in: `gh auth status` or `glab auth status` (in WSL with only the Windows CLI, `gh.exe` or `glab.exe`). No remote: ask for the repository and wire it (`git remote add origin <url>`).
-- `docs/agents/factory.yml` and `docs/agents/git-host.md`: an earlier run. Start from their values and change only what the person changes. A `docs/agents/factory.md` from a version before 0.4: carry its values into `factory.yml`, then delete it.
+- `docs/agents/factory.yml`, `docs/agents/factory-notes.md` and `docs/agents/git-host.md`: an earlier run. Start from their values and change only what the person changes. A `factory.yml` of `version: 1`: move `checks.notes`, `build.commit_notes`, `build.main_branch_protection_notes` and `reviewer_rules` to the sections of `factory-notes.md` (one bullet per reviewer rule), delete those keys and set `version: 2`. A `docs/agents/factory.md` from a version before 0.4: carry its values into both files, then delete it.
 - `AGENTS.md`, `CLAUDE.md`, `README.md`, `CONTRIBUTING.md`: the languages used, the commit convention, the definition of done.
 - The coding agents in use: `.claude/`, `.codex/`, `.github/copilot-instructions.md`, `.cursor/`, `.gemini/`, `.agents/`, and what the instructions files mention.
 - The check command: package scripts, `Makefile`, `justfile`, CI config (`.github/workflows/`, `.gitlab-ci.yml`). Pick the one command that runs format, lint, types and tests together. None: propose the sequence CI runs.
@@ -35,23 +35,25 @@ Summarise what you found, then go through these sections in order, one section p
 - **Build**: parallel workers; the commit convention, branch name and pull request title, taken from the repository (instructions files, a commit hook such as commitlint, lefthook or husky, `git log --format=%s -30`, `git branch -r`) and never imposed: a repository without one keeps plain subjects; auto-merge (on: the orchestrator merges a pull request whose gates pass and whose serenity score reaches the threshold; off: every pull request goes to the person).
 - **Code comments** (`build.code_comments`): offer the three options, with the one the instructions files point to as the recommendation, `directives-only` when they say nothing: `directives-only` (tool directives only, no descriptive or documentation comment, no why), `documentation` (also documentation comments such as TSDoc or docstrings, and a rare why), `any` (the instructions files decide).
 - **Protected paths** and **rules for the reviewer**: propose them from what you read; the person adds the rules no tool enforces.
+- **Notes**: what a builder must know to run the checks and prove its work (narrower commands, a service to stub, a limit of the machine), and the full commit convention with an example per kind of change. They go in `docs/agents/factory-notes.md`, with the rules for the reviewer.
 
 ## 3. Write
 
-Show the person both files complete before writing them; let them edit. Then:
+Show the person the three files complete before writing them; let them edit. Then:
 
 1. `docs/agents/git-host.md`: copy [git-host-github.md](git-host-github.md) or [git-host-gitlab.md](git-host-gitlab.md), fill the repository and the CLI's name, and **check every command against the installed CLI**: run `<cli> <command> --help` for each one and fix any flag it does not have. CLIs change; a wrong flag here breaks every build. Run the read-only ones for real (**List labels**, **List the queue**). When the CLI cannot read the repository from the clone (a Windows `gh.exe` or `glab.exe` under WSL fails with « dubious ownership » or « not a git repository »), add `--repo <owner>/<repo>` (`-R` for `glab`) to every command that does not already name it.
 2. `docs/agents/factory.yml`: from [factory-template.yml](factory-template.yml), keeping its comments and its first line (the schema link), with no `<placeholder>` left. A setting with nothing to say is `none`, `""` or `[]`. Check it against [factory.schema.json](factory.schema.json) when a validator is at hand (an editor with the YAML language server, `check-jsonschema`); otherwise read it against the schema yourself. Keep to plain block YAML, one key per line: the stop gate reads it with a shell parser.
-3. Create the missing labels (**Create a label**).
-4. The instructions file, the project skills folder, the guardrails, the stop gate and the subagent settings for each agent in use: follow [coding-agents.md](coding-agents.md).
-5. Add this pointer to the instructions file:
+3. `docs/agents/factory-notes.md`: from [factory-notes-template.md](factory-notes-template.md), keeping its headings, with « None. » under a section with nothing to say.
+4. Create the missing labels (**Create a label**).
+5. The instructions file, the project skills folder, the guardrails, the stop gate and the subagent settings for each agent in use: follow [coding-agents.md](coding-agents.md).
+6. Add this pointer to the instructions file:
 
    ```markdown
    ## Agent workflow
 
-   Specs, labels, checks, models and merge policy for agents: `docs/agents/factory.yml`. Git host commands: `docs/agents/git-host.md`.
+   Specs, labels, checks, models and merge policy for agents: `docs/agents/factory.yml`; notes on checks and commits, and the rules for the reviewer: `docs/agents/factory-notes.md`. Git host commands: `docs/agents/git-host.md`.
    ```
 
-6. Main branch protection is the real merge gate, because a rule in prose can be argued with and a platform setting cannot. Offer **Protect the main branch**. Refused or not available: set `build.main_branch_protection` to false and say why in `build.main_branch_protection_notes`, so the person knows the gate is prose only.
+7. Main branch protection is the real merge gate, because a rule in prose can be argued with and a platform setting cannot. Offer **Protect the main branch**. Refused or not available: set `build.main_branch_protection` to false and say why under « Main branch protection » in `docs/agents/factory-notes.md`, so the person knows the gate is prose only.
 
-Done when neither file has a placeholder, every command in `docs/agents/git-host.md` matches the installed CLI's help, every label exists on the git host, and the check command passes on the main branch (run it once). Tell the person what was written, and that `/write-spec` starts the first spec.
+Done when no file has a placeholder, every command in `docs/agents/git-host.md` matches the installed CLI's help, every label exists on the git host, and the check command passes on the main branch (run it once). Tell the person what was written, and that `/write-spec` starts the first spec.

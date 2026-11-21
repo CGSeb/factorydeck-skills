@@ -58,9 +58,9 @@ For each cause, pick its category; the category says where the fix lands.
 | Category | Symptom in the session | Fix lands in |
 | --- | --- | --- |
 | Automated check | A mistake a tool could catch (it reached review, CI or the person) | The repository's linter, type checker or tests, a CI step, an agent hook or permission rule |
-| Reviewer rule | A judgement-call mistake the reviewer let through | `reviewer_rules` in `docs/agents/factory.yml` |
+| Reviewer rule | A judgement-call mistake the reviewer let through | « Reviewer rules » in `docs/agents/factory-notes.md` |
 | Navigation | Many calls to find a file, a command or a fact | A pointer from a file the agent already reads: `AGENTS.md`, a skill |
-| Procedure | An agent took a wrong path in a skill's steps, or a step was missing or vague | The skill's own file, or `docs/agents/factory.yml` when the step is project-specific |
+| Procedure | An agent took a wrong path in a skill's steps, or a step was missing or vague | The skill's own file, or `docs/agents/factory-notes.md` (or a value of `docs/agents/factory.yml`) when the step is project-specific |
 | Tool economy | A call returned far more than needed, or the same command ran again and again | A narrower command, a structured output, a cheaper model for the step |
 | Information access | The agent needed something it could not reach (a log, a service, a decision) | A log written to a file, a read-only access, a question a skill asks earlier |
 | Steering | `AGENTS.md`, a skill or the person's global instructions hold lines that change nothing | Delete them, or move them to a check or to the reviewer |
