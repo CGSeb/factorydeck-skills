@@ -40,7 +40,7 @@ Before planning, and after each merge, remove what merged pull requests left. A 
 
 Then delete the local branches of merged pull requests that no worktree uses any more.
 
-Leave each branch's factory folder (`factory/<branch>` in the repository's shared git directory, `git rev-parse --path-format=absolute --git-common-dir`): it holds the evidence, outside any worktree and never committed. Step 7 names it; the person deletes it.
+Leave each branch's factory folder (`factory/<branch>` in the repository's shared git directory, `git rev-parse --path-format=absolute --git-common-dir`): it holds the evidence, outside any worktree and never committed. Step 7 names it. Delete a factory folder once its branch is gone from `git branch` and no file in it changed for 30 days: `find <folder> -mtime -30 | head -1` prints nothing.
 
 ## 1b. Check each spec before building
 
@@ -131,3 +131,4 @@ If FactoryDeck tracks this repository, point the person to the batch's cost per 
 - Never weaken a test, a rule, a gate or the threshold to merge. They live in `docs/agents/factory.yml` and in this skill; only a person changes them.
 - A worker stuck or silent after its fix attempts is blocked: label it blocked and comment the issue if it did not.
 - Two workers never share a branch, a worktree or an issue. Two branches that both add a database migration: the second to merge rebases and regenerates its migration.
+- The person wants to try a branch: run it yourself, in the background, from its worktree, the way `docs/agents/factory-notes.md` proves work in the real app, and give them the address. A command you hand them starts with `cd <worktree> &&` in the same block: the main checkout runs `<main>`, not the branch.
