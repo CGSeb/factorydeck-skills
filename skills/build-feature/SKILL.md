@@ -108,7 +108,7 @@ Follow [serenity.md](serenity.md): run every gate, score the pull request, write
 
 When a pull request goes to the person (step 5) and an issue of the queue is blocked by it, the batch can go on only after the person merges it. Watch it rather than stop:
 
-- One watch for every pull request handed over, started with step 5's hand-over: every 5 minutes, **Pull request facts** for each, until one is merged or closed. How to watch without polling yourself: « Wait for an external change » in [coding-agents.md](coding-agents.md).
+- One watch for every pull request handed over, started with step 5's hand-over: every 20 seconds, **Pull request facts** for each, until one is merged or closed. How to watch without polling yourself: « Wait for an external change » in [coding-agents.md](coding-agents.md).
 - Merged: step 0 again (a service may have stopped meanwhile), then step 6.
 - Closed without merge: its blocked issues stay blocked; tell the person.
 - No issue waits on a handed-over pull request any more, or 24 hours passed: stop the watch, and say in step 7 which pull requests still wait.
