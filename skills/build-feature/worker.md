@@ -1,6 +1,6 @@
 # Build-feature worker
 
-You build **one issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.**
+You build **one issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.** Your report is the only thing the orchestrator reads: keep no task list or progress summary of your own.
 
 Read `docs/agents/factory.yml` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Then read `docs/agents/factory-notes.md`: what this repository's checks, proofs and commits need beyond those values. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
 
@@ -11,17 +11,19 @@ Every call you make re-reads your whole context, and a worker makes over a hundr
 - **One message, several calls**: when reads, searches or commands do not depend on each other, send them together in one message.
 - **One shell call, several commands**: chain what always goes together (`git add … && git commit … && git log --oneline -1`).
 - **Read what you need**: the instructions file (`AGENTS.md`, or `CLAUDE.md`) is already in your context; do not read it again. Find with `grep -n` first, then read the lines around the match, not the whole file. Never re-read a file you just wrote or edited.
-- **Keep long output out of your context**: send check, build and test output to a log in your worktree's git directory (`log="$(git rev-parse --git-dir)/factory/<name>.log"`) and read only its end or its failures (`… > "$log" 2>&1; tail -30 "$log"`).
+- **Keep long output out of your context**: send check, build and test output to a log in your factory folder (`log="<factory>/<name>.log"`) and read only its end or its failures (`… > "$log" 2>&1; tail -30 "$log"`).
 - **Run the narrowest check while building**: one test file, one package, one verification feature. The full check command runs once, at the end (section 4).
 - **Look only at the evidence that proves your criteria**, once each.
 
 ## 1. Prepare the worktree
 
-The orchestrator created your worktree on your branch, from an up-to-date `<main>`. Work only in it: `cd` into it in every shell call, or use absolute paths. Make a folder for your logs and your pull request body, inside the worktree's git directory so they are never committed:
+The orchestrator created your worktree on your branch, from an up-to-date `<main>`. Work only in it: `cd` into it in every shell call, or use absolute paths. Make your **factory folder**, `<factory>` below, for your logs, your evidence and your pull request body. It sits in the repository's shared git directory: never committed, and kept when the orchestrator removes your worktree after the merge, so the person can still open the evidence:
 
 ```bash
-cd <worktree> && git status --short --branch && mkdir -p "$(git rev-parse --git-dir)/factory"
+cd <worktree> && git status --short --branch && factory="$(git rev-parse --path-format=absolute --git-common-dir)/factory/<branch>" && mkdir -p "$factory" && echo "$factory"
 ```
+
+Keep the evidence you produce (screenshots, recordings, command output) in `<factory>/evidence/`, unless the verification skill names another place.
 
 Then set the worktree up the way the repository does (install dependencies, build what the checks need). A file git ignores, like `.env`, is not in a new worktree: link it from the main checkout (`git worktree list` names it) rather than copying secrets around. Never start or reset a shared service (a database, a dev server) the main checkout uses; start your own when the checks need one and the repository allows it.
 
@@ -61,7 +63,7 @@ A criterion you could not prove stays unticked, and the spec keeps its ready sta
 
 Commit following `build.commit_convention` of `docs/agents/factory.yml` and the « Commits » section of `docs/agents/factory-notes.md`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
 
-Write the pull request body, in the language for people, to `$(git rev-parse --git-dir)/factory/pr-body.md` (never committed): `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs and the scope limits. The shipper publishes it as it is, so keep it current each time you report.
+Write the pull request body, in the language for people, to `<factory>/pr-body.md`: `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs and the scope limits. The shipper publishes it as it is, so keep it current each time you report.
 
 Report with `"status": "reviewable"` (section 6) and wait.
 
@@ -78,7 +80,7 @@ End each report with this block, and nothing after it (`pr` is `null` until the 
   "pr": 41,
   "branch": "<branch>",
   "worktree": "/abs/path/to/worktree",
-  "pr_body": "/abs/path/to/worktree-git-dir/factory/pr-body.md",
+  "pr_body": "/abs/path/to/<factory>/pr-body.md",
   "criteria": [{ "text": "…", "proven_by": "verification recipe / test name" }],
   "product_choices": ["…"],
   "implementation_notes": ["…"],

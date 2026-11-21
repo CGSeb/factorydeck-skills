@@ -40,6 +40,8 @@ Before planning, and after each merge, remove what merged pull requests left. A 
 
 Then delete the local branches of merged pull requests that no worktree uses any more.
 
+Leave each branch's factory folder (`factory/<branch>` in the repository's shared git directory, `git rev-parse --path-format=absolute --git-common-dir`): it holds the evidence, outside any worktree and never committed. Step 7 names it; the person deletes it.
+
 ## 1b. Check each spec before building
 
 A spec with its checked line was checked with the person: start its worker. Otherwise check it first, on the model for spec checks, so that the questions do not depend on the builder's model: one background agent per issue, all started together, with this prompt:
@@ -102,6 +104,15 @@ The title follows `build.pull_request_title`, with the subject of the worker's m
 
 Follow [serenity.md](serenity.md): run every gate, score the pull request, write the breakdown, then merge it or hand it to the person. Merge one pull request at a time.
 
+## 5b. Wait for a person's merge
+
+When a pull request goes to the person (step 5) and an issue of the queue is blocked by it, the batch can go on only after the person merges it. Watch it rather than stop:
+
+- One watch for every pull request handed over, started with step 5's hand-over: every 5 minutes, **Pull request facts** for each, until one is merged or closed. How to watch without polling yourself: « Wait for an external change » in [coding-agents.md](coding-agents.md).
+- Merged: step 0 again (a service may have stopped meanwhile), then step 6.
+- Closed without merge: its blocked issues stay blocked; tell the person.
+- No issue waits on a handed-over pull request any more, or 24 hours passed: stop the watch, and say in step 7 which pull requests still wait.
+
 ## 6. After a merge
 
 1. `git pull --ff-only` in the main checkout.
@@ -111,7 +122,7 @@ Follow [serenity.md](serenity.md): run every gate, score the pull request, write
 
 ## 7. Finish
 
-When no worker is running and nothing is buildable, report a table: issue, pull request, score, outcome (merged, waiting for a person and why, waiting for its spec and the questions asked, blocked and why), and where each verification left its evidence. Name first what a person should look at.
+When no worker or watch is running and nothing is buildable, report a table: issue, pull request, score, outcome (merged, waiting for a person and why, waiting for its spec and the questions asked, blocked and why), and the factory folder of each branch, which holds its evidence and its pull request body. Name first what a person should look at.
 
 If FactoryDeck tracks this repository, point the person to the batch's cost per issue and per role there.
 

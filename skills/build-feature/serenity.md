@@ -6,7 +6,12 @@ The orchestrator decides here whether a pull request merges without a person. Tw
 
 ## 1. Gates
 
-Gather the facts: **Pull request facts**, **Commits behind main**, and **Pull request diff** saved to a file.
+Gather the facts in two calls, from the main checkout:
+
+- **Pull request facts**: open, draft, base, head commit, CI, closed issues.
+- `sh <skill dir>/gates.sh <branch>`: the head commit, the commits behind `<main>`, the changed lines, each spec touched with its status line and unticked boxes, the changed files under `protected_paths` (entries in prose are listed for you to check by hand), the added suppressions, and the existing files the branch modifies, deletes or renames. Its head must be the head of **Pull request facts**: otherwise the local branch is stale, and you fetch it first.
+
+Read **Pull request diff** only where a fact needs a closer look: a migration among the modified files, a suppression to judge, a change other features rely on.
 
 Every line below that fails is a gate failure. Write each one down in plain words; do not argue any away.
 
