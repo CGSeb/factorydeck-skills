@@ -154,6 +154,7 @@
         "commit_convention": { "$ref": "#/$defs/nonEmpty" },
         "pull_request_title": { "$ref": "#/$defs/nonEmpty" },
         "commit_notes": { "type": "string" },
+        "code_comments": { "enum": ["directives-only", "documentation", "any"] },
         "auto_merge": { "type": "boolean" },
         "serenity_threshold": { "type": "integer", "minimum": 0, "maximum": 100 },
         "main_branch_protection": { "type": "boolean" },

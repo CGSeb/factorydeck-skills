@@ -33,6 +33,7 @@ Summarise what you found, then go through these sections in order, one section p
 - **Specs**: the folder and the format. A repository with its own spec format keeps it: fill `specs.format` with its strings.
 - **Issues**: the labels (defaults unless the repository already has its own), and how dependencies are recorded: GitLab blocking links need Premium or Ultimate; without them, the spec's depends-on line is the record.
 - **Build**: parallel workers; the commit convention, branch name and pull request title, taken from the repository (instructions files, a commit hook such as commitlint, lefthook or husky, `git log --format=%s -30`, `git branch -r`) and never imposed: a repository without one keeps plain subjects; auto-merge (on: the orchestrator merges a pull request whose gates pass and whose serenity score reaches the threshold; off: every pull request goes to the person).
+- **Code comments** (`build.code_comments`): offer the three options, with the one the instructions files point to as the recommendation, `directives-only` when they say nothing: `directives-only` (tool directives only, no descriptive or documentation comment, no why), `documentation` (also documentation comments such as TSDoc or docstrings, and a rare why), `any` (the instructions files decide).
 - **Protected paths** and **rules for the reviewer**: propose them from what you read; the person adds the rules no tool enforces.
 
 ## 3. Write
