@@ -1,0 +1,3 @@
+interface:
+  display_name: "Check Spec"
+  short_description: "Settle a spec's open product choices"

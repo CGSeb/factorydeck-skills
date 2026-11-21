@@ -1,10 +1,10 @@
 # Writing for agents
 
-How to write a skill, a `CLAUDE.md` or `AGENTS.md`, a reviewer rule or `~/.claude/CLAUDE.md`. Adapted from Matt Pocock's `writing-for-agents` skill (https://github.com/mattpocock/skills, MIT).
+How to write a skill, an `AGENTS.md`, a reviewer rule or an agent's global instructions. Adapted from Matt Pocock's `writing-for-agents` skill (https://github.com/mattpocock/skills, MIT).
 
 ## Two budgets
 
-- **Context load**: what sits in every agent's window on every turn: `AGENTS.md`, `CLAUDE.md`, each skill's `description`. Every word there costs on every turn of every agent, workers included.
+- **Context load**: what sits in every agent's window on every turn: `AGENTS.md` (or `CLAUDE.md`), each skill's `description`. Every word there costs on every turn of every agent, workers included.
 - **On demand**: a skill's body, `reviewer.md`, a doc reached through a pointer. Loaded only when needed.
 
 Put material as low as it can go: a check before a sentence, a reviewer rule before an `AGENTS.md` line, a pointer to a doc before the doc's content.

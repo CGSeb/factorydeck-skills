@@ -1,13 +1,13 @@
 ---
 name: write-spec
-description: "Write a feature spec with the person and open its GitHub issue, so build-feature can build it. Interviews the person on the user goal, writes testable acceptance criteria in the repository's spec format, records dependencies as blocked-by relationships, then runs check-spec. Use when asked to write, draft or add a spec, or to turn an idea into buildable work."
+description: "Write a feature spec with the person and open its issue on GitHub or GitLab, so build-feature can build it. Interviews the person on the user goal, writes testable acceptance criteria in the repository's spec format, records its dependencies, then runs check-spec. Use when asked to write, draft or add a spec, or to turn an idea into buildable work."
 ---
 
 # Write a spec
 
 A spec says what a user will be able to do and how anyone can tell it is done. It is the only input a builder agent gets beside the code, so everything a user will see must be in it.
 
-`docs/agents/factory.md` gives the specs folder, the spec format, the issue conventions and the language for people. It should exist; if not, tell the person to run `/setup-factory` and stop.
+`docs/agents/factory.md` gives the specs folder, the spec format, the issue conventions and the language for people; operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
 
 ## 1. Understand the feature
 
@@ -42,22 +42,8 @@ Run the `check-spec` skill on the new spec, with the person, before anything els
 
 The spec reaches the main branch first (commit it on a branch and merge it, or commit on the main branch if the person works that way), because a builder starts from the main branch.
 
-1. Create the issue: the title format from `docs/agents/factory.md`, the spec's issue label, and a body that links the spec on the main branch and repeats its depends-on line:
+1. **Create an issue**: the title format from `docs/agents/factory.md`, the spec's issue label, and a body that links the spec on the main branch and repeats its depends-on line with the issue numbers (`Depends on: #12, #15`).
+2. When `docs/agents/factory.md` records dependencies as blocking links, **Add a blocker** for each spec it depends on, even one whose issue is closed: `build-feature` reads the links first. Otherwise the depends-on line is the record.
+3. Once the spec is on the main branch with its checked line, **Move an issue's labels** to add the ready label. Before that, a builder would start from a main branch that lacks the spec.
 
-   ```bash
-   gh issue create --repo <repo> --title "<NNN · Name>" --label <spec label> --body-file <file>
-   ```
-
-2. For each spec it depends on, add a `blocked by` relationship to that spec's issue, even a closed one: `build-feature` reads the relationships, not the body. `<id>` is the blocking issue's `id`, not its number:
-
-   ```bash
-   gh api repos/<repo>/issues/<blocking number> --jq .id
-   ```
-
-   ```bash
-   gh api -X POST repos/<repo>/issues/<issue>/dependencies/blocked_by -F issue_id=<id>
-   ```
-
-3. Once the spec is on the main branch with its checked line, add the ready label. Before that, a builder would start from a main branch that lacks the spec.
-
-Done when the issue exists with its labels and relationships, and the person has the link.
+Done when the issue exists with its labels and dependencies, and the person has the link.

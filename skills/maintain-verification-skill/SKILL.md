@@ -24,7 +24,7 @@ Only edit the verification skill's own folder (its `SKILL.md`, `features/` and a
 
 ## Pass
 
-0. **Locate the target.** Find the verification skill to maintain: the one `docs/agents/factory.md` names, or the project-local skill whose body has launch and drive sections and a feature map (usually `.claude/skills/verify-*/`). Several candidates: ask which one. None: stop and point at `/create-verification-skill` instead of inventing a target.
+0. **Locate the target.** Find the verification skill to maintain: the one `docs/agents/factory.md` names, or the project-local skill whose body has launch and drive sections and a feature map (usually `verify-*` in `.agents/skills/` or `.claude/skills/`). Several candidates: ask which one. None: stop and point at `/create-verification-skill` instead of inventing a target.
 
 1. **Index hygiene.** Read the feature map README and list its sibling files. Fix missing, extra, duplicate or dead entries. Lightweight; no generated inventory.
 

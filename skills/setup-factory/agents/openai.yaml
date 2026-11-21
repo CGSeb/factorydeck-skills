@@ -1,0 +1,5 @@
+interface:
+  display_name: "Setup Factory"
+  short_description: "Configure the repo for the factory skills"
+policy:
+  allow_implicit_invocation: false

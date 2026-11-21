@@ -1,57 +1,39 @@
 ---
 name: build-feature
-description: "Build features from their GitHub issues with a team of agents. Takes every issue of the queue that can be built now, starts one background builder per issue in its own worktree, reviews each branch independently before it is pushed, scores how safe it is to merge, and merges it when the gates and the score allow. Use when asked to build a feature, to take the next issues, or to work through the queue."
+description: "Build features from their issues (GitHub or GitLab) with a team of agents. Takes every issue of the queue that can be built now, starts one background builder per issue in its own git worktree, reviews each branch independently before it is pushed, scores how safe it is to merge, and merges it when the gates and the score allow. Use when asked to build a feature, to take the next issues, or to work through the queue."
 ---
 
 # Build features
 
-You are the **orchestrator**. You never write feature code: you plan, start one worker per issue, have what they deliver reviewed, score it and merge it or hand it to a person. Workers follow [worker.md](worker.md); reviewers follow [reviewer.md](reviewer.md); shippers, on the cheapest model, follow [shipper.md](shipper.md); the gates and the score are in [serenity.md](serenity.md).
+You are the **orchestrator**. You never write feature code: you plan, start one worker per issue, have what they deliver reviewed, score it and merge it or hand it to a person. Workers follow [worker.md](worker.md); reviewers follow [reviewer.md](reviewer.md); shippers, on a cheaper model, follow [shipper.md](shipper.md); the gates and the score are in [serenity.md](serenity.md). How to start and talk to those agents in your coding agent is in [coding-agents.md](coding-agents.md).
 
-`docs/agents/factory.md` gives the repository, the labels, the check command, the verification skill, the conventions and the merge policy. It should exist; if not, tell the person to run `/setup-factory` and stop. Below, `gh` is the GitHub CLI it names, `<repo>` its repository, `<main>` its main branch, and a label in angle brackets (`<ready>`) the label of that role. Stay on an up-to-date `<main>` in the main checkout, and never edit files there.
+`docs/agents/factory.md` gives the labels, the check command, the verification skill, the conventions and the merge policy; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). They should exist; if not, tell the person to run `/setup-factory` and stop. Below, `<main>` is the main branch and a label in angle brackets (`<ready>`) the label of that role. Stay on an up-to-date `<main>` in the main checkout, and never edit files there.
 
-Pass these paths to every agent you start: `<skill dir>` is the folder of this file, so they can read their role file.
+`<skill dir>` is the folder of this file: give it to every agent you start, so it can read its role file.
 
 ## 1. Plan the batch
 
-First clean up merged work (step 1a). If the person named issues, take those. Otherwise list the queue:
+First clean up merged work (step 1a). If the person named issues, take those. Otherwise **List the queue**.
 
-```bash
-gh issue list --repo <repo> --label <spec> --label <ready> --state open --json number,title --jq 'sort_by(.title)'
-```
+An issue is **buildable** when none of its blockers is open: **Open blockers** for each, and read the depends-on line of each spec too. A blocker is open until its pull request is merged: an issue whose blocker is being built in this batch waits for that merge. A dependency in the spec that the git host does not record counts the same; when the git host records blocking links, tell the person it is missing.
 
-An issue is **buildable** when none of its blockers is open:
-
-```bash
-gh api repos/<repo>/issues/<issue>/dependencies/blocked_by --jq '[.[] | select(.state == "open") | .number]'
-```
-
-A blocker is open until its pull request is merged: an issue whose blocker is being built in this batch waits for that merge. Read the depends-on line of each spec too; a dependency there that GitHub does not record counts the same, and tell the person it is missing.
-
-Take the buildable issues in title order, **at most the parallel workers** of `docs/agents/factory.md` at a time. Claim each at once:
-
-```bash
-gh issue edit <issue> --repo <repo> --remove-label <ready> --add-label <working>
-```
+Take the buildable issues in title order, **at most the parallel workers** of `docs/agents/factory.md` at a time. Claim each at once: **Move an issue's labels** from `<ready>` to `<working>`.
 
 Tell the person the plan in a short table: the issues started, the ones waiting (and on what), and the ones left for later by the cap. Nothing buildable: say why and stop.
 
 ## 1a. Clean up merged work
 
-Before planning, and after each merge, remove what merged pull requests left. A person may have merged one handed to them since the last batch. For each agent worktree (`git worktree list`):
-
-```bash
-gh pr list --repo <repo> --head <branch> --state merged --json number --jq length
-```
+Before planning, and after each merge, remove what merged pull requests left. A person may have merged one handed to them since the last batch. For each worktree of `git worktree list` other than the main checkout, **Merged pull requests of a branch**:
 
 - Not merged: keep it, it may get a follow-up.
 - Merged and `git -C <path> status --short` empty: `git worktree remove <path>`, then `git branch -D <branch>`.
 - Merged but with changes: check that they hold nothing new. When `git -C <path> write-tree` names the tree of a commit of the branch (`git log --all --format='%H %T'`), they are a stale state already committed: `git worktree remove --force <path>` and delete the branch. Otherwise keep it and tell the person what it holds.
 
-Then delete the local branches no worktree uses any more: the throwaway branches agents' worktrees were created on, and the branches of merged pull requests.
+Then delete the local branches of merged pull requests that no worktree uses any more.
 
 ## 1b. Check each spec before building
 
-A spec with its checked line was checked with the person: start its worker. Otherwise check it first, on the most capable model whatever model the worker uses, so that the questions do not depend on the builder's model: one `Agent` per issue, all in the same message, `run_in_background: true`, `description: "Check spec #<issue>"`, and this prompt:
+A spec with its checked line was checked with the person: start its worker. Otherwise check it first, with the most capable model you can choose, so that the questions do not depend on the builder's model: one background agent per issue, all started together, with this prompt:
 
 > Check the spec `<spec path>`, issue #<issue>. Run the `check-spec` skill on it in its « Before a build » mode: the person is not there.
 
@@ -60,13 +42,19 @@ A spec with its checked line was checked with the person: start its worker. Othe
 
 ## 2. Start the workers
 
-One `Agent` call per issue, all in the same message: `isolation: "worktree"`, `run_in_background: true`, `description: "Build #<issue>"`, and this prompt:
+For each issue, create its worktree yourself, on its branch, from an up-to-date `<main>`, outside the main checkout (a sibling folder, or one git ignores):
 
-> You are a build-feature worker. Build GitHub issue #<issue> (« <title> ») of `<repo>`, spec `<spec path>`, on branch `<branch name from the convention>`. Read `<skill dir>/worker.md` and follow it exactly. The issue is already claimed. Finish with the report it describes.
+```bash
+git fetch origin <main> && git worktree add -b <branch> <worktree path> origin/<main>
+```
 
-Keep each worker's id with its issue: you will send it review findings, CI failures and rebase conflicts with `SendMessage`. While workers run, do not poll them; you are notified when one reports.
+The branch name follows the convention of `docs/agents/factory.md`. Then start one background agent per issue, all together, with this prompt:
 
-A worker's context grows to hundreds of thousands of tokens, and every call it makes re-reads it. Resume a worker only for work that needs code; everything mechanical (rebase without conflict, push, pull request, labels, CI watch) goes to a fresh **shipper** (step 4b).
+> You are a build-feature worker. Build issue #<issue> (« <title> »), spec `<spec path>`, in the worktree `<worktree path>` on branch `<branch>`; work only there. Read `<skill dir>/worker.md` and follow it exactly. The issue is already claimed. Finish with the report it describes.
+
+Keep each worker's id with its issue, its worktree and its branch: you will send it review findings, CI failures and rebase conflicts. While workers run, do not poll them; wait for their reports.
+
+A worker's context grows to hundreds of thousands of tokens, and every call it makes re-reads it. Write to a worker only for work that needs code; everything mechanical (rebase without conflict, push, pull request, labels, CI watch) goes to a fresh **shipper** (step 4b).
 
 ## 3. When a worker reports
 
@@ -77,9 +65,9 @@ A worker's context grows to hundreds of thousands of tokens, and every call it m
 
 ## 4. Independent review, before any push
 
-The review runs locally, so CI only runs on work that passed it. Start a **fresh** reviewer, never the worker: `Agent` with `description: "Review #<issue>"` and this prompt:
+The review runs locally, so CI only runs on work that passed it. Start a **fresh** reviewer, never the worker, with this prompt:
 
-> Review the local branch `<branch>` of `<repo>`, worktree `<worktree>`, which builds issue #<issue> (spec `<spec path>`). Read `<skill dir>/reviewer.md` and follow it exactly.
+> Review the local branch `<branch>`, worktree `<worktree>`, which builds issue #<issue> (spec `<spec path>`). Read `<skill dir>/reviewer.md` and follow it exactly.
 
 Give it nothing else: not the worker's report, not your reasoning. Note the branch's head commit (`git rev-parse <branch>`): it is the start of a second round.
 
@@ -90,9 +78,9 @@ Give it nothing else: not the worker's report, not your reasoning. Note the bran
 
 ## 4b. Ship
 
-Start a fresh shipper, never the worker: `Agent` with the cheapest capable model (`model: "haiku"` in Claude Code), `run_in_background: true`, `description: "Ship #<issue>"`, and this prompt:
+Start a fresh shipper, never the worker, on the cheapest capable model you can choose, in the background, with this prompt:
 
-> Ship the branch `<branch>` of `<repo>`, worktree `<worktree>`, for issue #<issue>. Task: <« push and open the pull request titled `<title>` » | « push and update pull request #<pr> » | « rebase, push and update pull request #<pr> »>. Read `<skill dir>/shipper.md` and follow it exactly.
+> Ship the branch `<branch>`, worktree `<worktree>`, for issue #<issue>. Task: <« push and open the pull request titled `<title>` » | « push and update pull request #<pr> » | « rebase, push and update pull request #<pr> »>. Read `<skill dir>/shipper.md` and follow it exactly.
 
 The title follows the pull request title convention of `docs/agents/factory.md`, with the subject of the worker's main commit; with a squash merge, it becomes the commit message on `<main>`.
 
@@ -121,4 +109,4 @@ If FactoryDeck tracks this repository, point the person to the batch's cost per 
 
 - Never weaken a test, a rule, a gate or the threshold to merge. They live in `docs/agents/factory.md` and in this skill; only a person changes them.
 - A worker stuck or silent after its fix attempts is blocked: label it blocked and comment the issue if it did not.
-- Two workers never share a branch or an issue. Two branches that both add a database migration: the second to merge rebases and regenerates its migration.
+- Two workers never share a branch, a worktree or an issue. Two branches that both add a database migration: the second to merge rebases and regenerates its migration.

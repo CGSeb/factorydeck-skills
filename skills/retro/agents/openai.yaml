@@ -1,0 +1,5 @@
+interface:
+  display_name: "Retro"
+  short_description: "Learn from an agent session"
+policy:
+  allow_implicit_invocation: false

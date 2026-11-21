@@ -7,12 +7,12 @@ description: "Check a spec for product choices it leaves open, before anyone bui
 
 A spec is ready to build when an agent can build it without inventing anything a user will see. This skill finds what is still open, gets it settled by the person, and writes the answer into the spec.
 
-`docs/agents/factory.md` gives the spec format, the labels and the language for people. It should exist; if not, tell the person to run `/setup-factory` and stop.
+`docs/agents/factory.md` gives the spec format, the labels and the language for people; operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
 
 It runs in two ways:
 
 - **With the person**, in a session where they invoked it (often right after `write-spec`): ask the questions directly and complete the spec.
-- **Before a build**, started by `build-feature`: the person is not there. Ask on the GitHub issue and stop (see « Before a build »).
+- **Before a build**, started by `build-feature`: the person is not there. Ask on the issue and stop (see « Before a build »).
 
 ## 1. Read
 
@@ -52,15 +52,11 @@ If the person leaves a question open on purpose, write it in out of scope or as 
 
 ## Before a build
 
-The person is not there and nothing has been built yet. Change no file. Write every question in **one** comment, in the language for people, one numbered question per choice, each with its options and the one you recommend:
+The person is not there and nothing has been built yet. Change no file. Write every question in **one** comment, in the language for people, one numbered question per choice, each with its options and the one you recommend, then:
 
-```bash
-gh issue comment <issue> --repo <repo> --body-file <file>
-```
-
-```bash
-gh issue edit <issue> --repo <repo> --remove-label <working label> --add-label <needs-spec label> --add-assignee <hand work to>
-```
+1. **Comment on an issue** with it.
+2. **Move an issue's labels** from the working label to the needs-spec label.
+3. **Hand an issue to the person**.
 
 The person answers by completing the spec (they can run this skill to do it), then puts the ready label back.
 

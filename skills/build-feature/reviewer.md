@@ -1,6 +1,6 @@
 # Build-feature reviewer
 
-You review **one local branch** an agent built, before it is pushed and before anyone decides to merge it. Your report is the main input of that decision: be precise, and only report what you verified. **Change nothing**: no edit, no commit, no push, no comment on GitHub, no checkout, in the worktree or anywhere else.
+You review **one local branch** an agent built, before it is pushed and before anyone decides to merge it. Your report is the main input of that decision: be precise, and only report what you verified. **Change nothing**: no edit, no commit, no push, no comment on the git host, no checkout, in the worktree or anywhere else.
 
 `docs/agents/factory.md` gives the main branch and the rules for the reviewer. Below, `<main>` is its main branch.
 
@@ -16,7 +16,7 @@ git fetch origin <main>
 git diff origin/<main>...<branch>
 ```
 
-Read a whole file with `git show <branch>:<path>`, or in the worktree. Then read the spec, the product context, `CLAUDE.md` or `AGENTS.md` (and those of each folder the diff touches), the commit messages (`git log origin/<main>..<branch>`), and the pull request body the worker wrote (`$(git -C <worktree> rev-parse --git-dir)/factory/pr-body.md`).
+Read a whole file with `git show <branch>:<path>`, or in the worktree. Then read the spec, the product context, the instructions file (`AGENTS.md`, or `CLAUDE.md`, and those of each folder the diff touches), the commit messages (`git log origin/<main>..<branch>`), and the pull request body the worker wrote (`$(git -C <worktree> rev-parse --git-dir)/factory/pr-body.md`).
 
 ### A second round
 
@@ -28,7 +28,7 @@ When your task names the commit of the first review (« second round, since `<sh
 2. **The rules for the reviewer** in `docs/agents/factory.md`, each one.
 3. **Bugs**: wrong edge cases (empty data, missing values, errors from a dependency), broken states, races, accessibility of new controls, regressions in features the diff touches.
 4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle.
-5. **Project rules**: what `CLAUDE.md` and `AGENTS.md` ask about organisation, type safety and tests.
+5. **Project rules**: what the instructions files ask about organisation, type safety and tests.
 6. **Undeclared limits**: a case of the data or of the spec that the branch does not handle, and that the pull request body does not mention. A missing test of code that handles the case is a finding, not a limit.
 
 ## Report

@@ -1,8 +1,8 @@
 # Build-feature worker
 
-You build **one GitHub issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.**
+You build **one issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.**
 
-Read `docs/agents/factory.md` first: it gives the repository, the labels, the check command, the verification skill, the conventions and the language for people. Below, `gh` is the GitHub CLI it names, `<repo>` its repository and `<main>` its main branch.
+Read `docs/agents/factory.md` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
 
 ## Spend few tokens
 
@@ -10,17 +10,17 @@ Every call you make re-reads your whole context, and a worker makes over a hundr
 
 - **One message, several calls**: when reads, searches or commands do not depend on each other, send them together in one message.
 - **One shell call, several commands**: chain what always goes together (`git add … && git commit … && git log --oneline -1`).
-- **Read what you need**: `CLAUDE.md` and `AGENTS.md` are already in your context; do not read them again. Find with `grep -n` first, then read the lines around the match, not the whole file. Never re-read a file you just wrote or edited.
+- **Read what you need**: the instructions file (`AGENTS.md`, or `CLAUDE.md`) is already in your context; do not read it again. Find with `grep -n` first, then read the lines around the match, not the whole file. Never re-read a file you just wrote or edited.
 - **Keep long output out of your context**: send check, build and test output to a log in your worktree's git directory (`log="$(git rev-parse --git-dir)/factory/<name>.log"`) and read only its end or its failures (`… > "$log" 2>&1; tail -30 "$log"`).
 - **Run the narrowest check while building**: one test file, one package, one verification feature. The full check command runs once, at the end (section 4).
 - **Look only at the evidence that proves your criteria**, once each.
 
 ## 1. Prepare the worktree
 
-You already are in a fresh worktree, on a throwaway branch. Start your branch from an up-to-date `<main>` and delete the throwaway one:
+The orchestrator created your worktree on your branch, from an up-to-date `<main>`. Work only in it: `cd` into it in every shell call, or use absolute paths. Make a folder for your logs and your pull request body, inside the worktree's git directory so they are never committed:
 
 ```bash
-git fetch origin <main> && git switch -c <branch> origin/<main> && git branch -D @{-1} && mkdir -p "$(git rev-parse --git-dir)/factory"
+cd <worktree> && git status --short --branch && mkdir -p "$(git rev-parse --git-dir)/factory"
 ```
 
 Then set the worktree up the way the repository does (install dependencies, build what the checks need). A file git ignores, like `.env`, is not in a new worktree: link it from the main checkout (`git worktree list` names it) rather than copying secrets around. Never start or reset a shared service (a database, a dev server) the main checkout uses; start your own when the checks need one and the repository allows it.
@@ -29,7 +29,7 @@ Then set the worktree up the way the repository does (install dependencies, buil
 
 Read the issue, the spec it links, the product context, and the code and verification features nearby. Turn each acceptance criterion into something you can prove.
 
-The orchestrator checked the spec before starting you. A product choice it still leaves open (something a user would see, or that changes what a figure means) is not yours: push your branch if it holds useful work, ask in one comment on the issue (in the language for people, numbered, with the options and the one you recommend), swap the working label for the needs-spec label, assign the issue to the person to hand work to, and report `needs-spec` with the questions in `blocked_reason`.
+The orchestrator checked the spec before starting you. A product choice it still leaves open (something a user would see, or that changes what a figure means) is not yours: push your branch if it holds useful work, **Comment on an issue** with your questions (in the language for people, numbered, with the options and the one you recommend), **Move an issue's labels** from the working label to the needs-spec label, **Hand an issue to the person**, and report `needs-spec` with the questions in `blocked_reason`.
 
 Implementation choices a user never sees (a table, a query, a component split) stay yours; write a notable one down in `implementation_notes`, for the reviewer: it costs nothing. If you still had to settle a choice a user sees, because asking was not possible, write it in `product_choices` with the spec sentence you read and why it was not enough: each one costs the score 10 points.
 
@@ -103,14 +103,6 @@ You stay addressable after your report.
 
 ## Blocked
 
-An open product choice is not a block: it goes through `needs-spec` (section 2). Stop when something you need is missing (data, access, a service), a check could only pass by loosening it, or **the same failure survives 3 fix attempts**. Push the branch if it holds useful work, then swap the working label for the blocked label and comment the issue with what blocks, what was tried and the decision needed:
-
-```bash
-gh issue edit <issue> --repo <repo> --remove-label <working> --add-label <blocked>
-```
-
-```bash
-gh issue comment <issue> --repo <repo> --body-file <file>
-```
+An open product choice is not a block: it goes through `needs-spec` (section 2). Stop when something you need is missing (data, access, a service), a check could only pass by loosening it, or **the same failure survives 3 fix attempts**. Push the branch if it holds useful work, then **Move an issue's labels** from the working label to the blocked label, and **Comment on an issue** with what blocks, what was tried and the decision needed.
 
 Report with `"status": "blocked"` and the `blocked_reason`. Never weaken a test, a rule or a verification recipe to finish.

@@ -2,32 +2,20 @@
 
 The orchestrator decides here whether a pull request merges without a person. Two parts: **gates**, facts that each hand the pull request to a person whatever the score, and the **serenity score**, how calm you would be merging it without anyone reading it.
 
-`docs/agents/factory.md` gives the auto-merge setting, the threshold, the merge method, the protected paths and the person to hand work to. Below, `gh` is its GitHub CLI, `<repo>` its repository and `<main>` its main branch.
+`docs/agents/factory.md` gives the auto-merge setting, the threshold, the merge method, the protected paths and the person to hand work to; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
 
 ## 1. Gates
 
-Gather the facts:
-
-```bash
-gh pr view <pr> --repo <repo> --json state,isDraft,baseRefName,headRefName,headRefOid,statusCheckRollup,files,closingIssuesReferences
-```
-
-```bash
-gh api repos/<repo>/compare/<main>...<head sha> --jq .behind_by
-```
-
-```bash
-gh pr diff <pr> --repo <repo> > <file>
-```
+Gather the facts: **Pull request facts**, **Commits behind main**, and **Pull request diff** saved to a file.
 
 Every line below that fails is a gate failure. Write each one down in plain words; do not argue any away.
 
 | Gate | Passes when |
 | --- | --- |
-| Open | `state` is `OPEN` and `isDraft` is false |
-| Base | `baseRefName` is `<main>` |
-| Up to date | `behind_by` is 0 |
-| CI | at least one check ran on the head commit, and every check concluded `SUCCESS`, `NEUTRAL` or `SKIPPED` |
+| Open | it is open and not a draft |
+| Base | the pull request targets `<main>` |
+| Up to date | it is 0 commits behind `<main>` |
+| CI | CI ran on the head commit and every check passed (the passing values are in `docs/agents/git-host.md`) |
 | One issue | the pull request closes exactly one issue, and it carries the spec label |
 | One spec | the diff updates exactly one spec, whose status is now its done value with every criterion ticked |
 | Protected paths | no changed file is under a protected path of `docs/agents/factory.md` (the feature map of the verification skill excepted) |
@@ -79,24 +67,7 @@ Gates: all passed. Review: 1 round, confidence high.
 
 ## 4. Merge or hand over
 
-- **Auto-merge on, every gate passes and the score reaches the threshold**: post the breakdown, then merge with the configured method and the pull request's title:
-
-  ```bash
-  gh pr comment <pr> --repo <repo> --body-file <breakdown>
-  ```
-
-  ```bash
-  gh pr merge <pr> --repo <repo> --squash --delete-branch --subject "<title>" --match-head-commit <head sha>
-  ```
-
-  (`--merge` or `--rebase` instead of `--squash` when that is the configured method.) `--match-head-commit` makes GitHub refuse the merge if the branch moved since you scored it.
-
-- **Otherwise**: post the breakdown followed by the reasons the merge is refused (each gate failure, or the score below the threshold, or auto-merge off), then assign the pull request to the person:
-
-  ```bash
-  gh pr edit <pr> --repo <repo> --add-assignee <hand work to>
-  ```
-
-  GitHub does not let an author request its own review, so the person finds these pull requests under « Assigned to you ». The issue keeps the review label; the worker's worktree stays for follow-up.
+- **Auto-merge on, every gate passes and the score reaches the threshold**: **Comment on a pull request** with the breakdown, then **Merge a pull request** with the configured method, the pull request's title and the head commit you scored. The git host refuses the merge if the branch moved since.
+- **Otherwise**: **Comment on a pull request** with the breakdown followed by the reasons the merge is refused (each gate failure, or the score below the threshold, or auto-merge off), then **Hand a pull request to the person**. The issue keeps the review label; the worker's worktree stays for follow-up.
 
 Never merge a pull request with a failed gate, and never change the threshold, a gate or `docs/agents/factory.md` to let one through.
