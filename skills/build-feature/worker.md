@@ -55,7 +55,7 @@ A criterion you could not prove stays unticked, and the spec keeps its ready sta
 
 ## 5. Commit, write the pull request body, hand over
 
-Commit following the repository's commit convention. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
+Commit following the commit convention of `docs/agents/factory.md`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
 
 Write the pull request body, in the language for people, to `$(git rev-parse --git-dir)/factory/pr-body.md` (never committed): `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs and the scope limits. The shipper publishes it as it is, so keep it current each time you report.
 
@@ -72,7 +72,7 @@ End each report with this block, and nothing after it (`pr` is `null` until the 
   "status": "needs-spec | reviewable | fixed | blocked",
   "issue": 26,
   "pr": 41,
-  "branch": "feat/002-search",
+  "branch": "<branch>",
   "worktree": "/abs/path/to/worktree",
   "pr_body": "/abs/path/to/worktree-git-dir/factory/pr-body.md",
   "criteria": [{ "text": "…", "proven_by": "verification recipe / test name" }],

@@ -43,7 +43,7 @@ End with this block, and nothing after it:
   "status": "green | ci-failed | conflict | check-failed",
   "issue": 26,
   "pr": 41,
-  "branch": "feat/002-search",
+  "branch": "<branch>",
   "head": "<short sha pushed>",
   "no_ci": false,
   "failed_check": null,

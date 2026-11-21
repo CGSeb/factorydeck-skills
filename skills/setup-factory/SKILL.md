@@ -32,7 +32,7 @@ Summarise what you found, then go through these sections in order, one section p
 - **Checks**: the check command, and the services it needs (a `docker-compose.yml`, a database in the CI config): propose a services check that fails fast when they are down (`docker info` then the compose health check, for example) and the start command, or none. Offer the stop gate (on by default; see [coding-agents.md](coding-agents.md) for which agents it reaches). No verification skill: offer `/create-verification-skill` for later.
 - **Specs**: the folder and the format. A repository with its own spec format keeps it: fill the table with its strings.
 - **Issues**: the labels (defaults unless the repository already has its own), and how dependencies are recorded: GitLab blocking links need Premium or Ultimate; without them, the spec's depends-on line is the record.
-- **Build**: parallel workers, branch and title conventions, auto-merge (on: the orchestrator merges a pull request whose gates pass and whose serenity score reaches the threshold; off: every pull request goes to the person).
+- **Build**: parallel workers; the commit convention, branch name and pull request title, taken from the repository (instructions files, a commit hook such as commitlint, lefthook or husky, `git log --format=%s -30`, `git branch -r`) and never imposed: a repository without one keeps plain subjects; auto-merge (on: the orchestrator merges a pull request whose gates pass and whose serenity score reaches the threshold; off: every pull request goes to the person).
 - **Protected paths** and **rules for the reviewer**: propose them from what you read; the person adds the rules no tool enforces.
 
 ## 3. Write

@@ -79,13 +79,14 @@ The spec format. Each line below names the text this repository uses for that pa
 ## Build
 
 - Parallel workers: 3
-- Branch name: `feat/<NNN>-<short-name>`
-- Pull request title: `feat: <Subject>`
+- Branch name: `<the repository's branch pattern, with the spec number and a short name>`
+- Commit convention: <the repository's own: its instructions file, commit hook or recent history | none>
+- Pull request title: `<the commit convention's form for a new feature, with the subject>`
 - Auto-merge: on
 - Serenity threshold: 80
 - Main branch protection: <on | off, and why>
 
-<Commit convention, if the repository has one.>
+<The commit convention in full, with an example for each kind of change a builder makes (a feature, a fix, a test, docs), when the repository has one. With a squash merge, the pull request title becomes the commit on the main branch, so it follows the same convention.>
 
 ## Protected paths
 

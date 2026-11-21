@@ -37,7 +37,7 @@ End with this block, and nothing after it. `findings` holds only problems you ve
 
 ```json
 {
-  "branch": "feat/002-search",
+  "branch": "<branch>",
   "findings": [
     {
       "severity": "blocker | major | minor",
