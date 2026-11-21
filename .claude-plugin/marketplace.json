@@ -1,0 +1,17 @@
+{
+  "name": "factorydeck",
+  "owner": {
+    "name": "CGSeb",
+    "url": "https://github.com/CGSeb"
+  },
+  "description": "FactoryDeck skills for running a software factory of coding agents, as an installable Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "factorydeck-skills",
+      "source": "./",
+      "description": "Write and check specs, build features with independent review and a merge gate, prove them in the real app, and learn from each run.",
+      "category": "engineering",
+      "keywords": ["software-factory", "agents", "specs", "code-review"]
+    }
+  ]
+}

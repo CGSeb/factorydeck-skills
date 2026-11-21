@@ -1,0 +1,28 @@
+{
+  "name": "factorydeck-skills",
+  "version": "0.1.0",
+  "description": "Skills for running a software factory of coding agents on any project: write and check specs, build features with independent review and a merge gate, prove them in the real app, and learn from each run.",
+  "author": {
+    "name": "CGSeb",
+    "url": "https://github.com/CGSeb"
+  },
+  "repository": "https://github.com/CGSeb/factorydeck-skills",
+  "license": "MIT",
+  "keywords": [
+    "software-factory",
+    "agents",
+    "specs",
+    "code-review",
+    "verification",
+    "retro"
+  ],
+  "skills": [
+    "./skills/setup-factory",
+    "./skills/write-spec",
+    "./skills/check-spec",
+    "./skills/build-feature",
+    "./skills/create-verification-skill",
+    "./skills/maintain-verification-skill",
+    "./skills/retro"
+  ]
+}
