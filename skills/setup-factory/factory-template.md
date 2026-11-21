@@ -16,6 +16,12 @@ Every issue, pull request (merge request on GitLab), label, CI and merge operati
 - Coding agents used here: <Claude Code, Codex, GitHub Copilot, …>
 - Instructions file: `AGENTS.md`
 - Project skills folder: `.agents/skills/`
+- Model for spec checks: session default
+- Model for workers: session default
+- Model for reviewers: session default
+- Model for shippers: session default
+
+Each model is a name the coding agent that runs `build-feature` accepts when it starts a subagent, or `session default`. When several coding agents run it, give one name per agent: `<model> (Claude Code), <model> (Codex)`. An agent that cannot choose a subagent's model, or does not know the name, uses its own.
 
 ## People
 
@@ -29,6 +35,10 @@ Every issue comment, question, pull request body and score report is written in 
 - Check command: `<command that runs format, lint, types and tests>`
 - Stop gate: on
 - Verification skill: none
+- Services check: none
+- Services start: none
+
+<If the checks or the verification need shared services (a database, a container engine), « Services check » is a command that succeeds only when they answer, and « Services start » the command that starts them from the main checkout. Say here what the person must start by hand when the check fails (a desktop application, a VPN): agents never start it themselves.>
 
 <Optional: narrower commands for one test file or one package, and anything a builder must know to run the checks: a database to start, a service to stub.>
 

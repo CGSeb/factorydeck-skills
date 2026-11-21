@@ -8,7 +8,7 @@
 | **Start several at once** | several `Agent` calls in one message | several `spawn_agent` calls in one response | One at a time |
 | **Wait for a report** | you are notified when one finishes; never poll | `wait_agent` | — |
 | **Write to an agent that already reported** | `SendMessage` with its id | send it input if the installed Codex can; otherwise the fallback | Start a fresh agent with the same role, worktree and the message (see below) |
-| **Pick a cheaper model** for the shipper | `model: "haiku"` | the cheapest model the session can name | Same model |
+| **Start an agent on the model of its role** (`docs/agents/factory.md`) | the `model` parameter of `Agent` | the model option of `spawn_agent`, if the installed Codex has one | The session's model |
 
 Other agents (GitHub Copilot, Gemini CLI, Cursor, …): use their subagent or delegation feature when it can run a prompt in a given directory and return its final message; otherwise use the fallbacks.
 

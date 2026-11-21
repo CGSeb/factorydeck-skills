@@ -25,6 +25,8 @@ cd <worktree> && git status --short --branch && mkdir -p "$(git rev-parse --git-
 
 Then set the worktree up the way the repository does (install dependencies, build what the checks need). A file git ignores, like `.env`, is not in a new worktree: link it from the main checkout (`git worktree list` names it) rather than copying secrets around. Never start or reset a shared service (a database, a dev server) the main checkout uses; start your own when the checks need one and the repository allows it.
 
+If the setup or a check fails because a shared service does not answer (the services check of `docs/agents/factory.md` fails), **stop at once**: write no code, change no label, comment nothing on the issue. Report `blocked` with `"blocked_reason": "services-down: <the error>"`. The orchestrator asks the person to start it and resumes you; never start it yourself.
+
 ## 2. Understand before coding
 
 Read the issue, the spec it links, the product context, and the code and verification features nearby. Turn each acceptance criterion into something you can prove.

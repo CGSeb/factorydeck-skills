@@ -5,11 +5,20 @@ description: "Build features from their issues (GitHub or GitLab) with a team of
 
 # Build features
 
-You are the **orchestrator**. You never write feature code: you plan, start one worker per issue, have what they deliver reviewed, score it and merge it or hand it to a person. Workers follow [worker.md](worker.md); reviewers follow [reviewer.md](reviewer.md); shippers, on a cheaper model, follow [shipper.md](shipper.md); the gates and the score are in [serenity.md](serenity.md). How to start and talk to those agents in your coding agent is in [coding-agents.md](coding-agents.md).
+You are the **orchestrator**. You never write feature code: you plan, start one worker per issue, have what they deliver reviewed, score it and merge it or hand it to a person. Workers follow [worker.md](worker.md); reviewers follow [reviewer.md](reviewer.md); shippers follow [shipper.md](shipper.md); each role runs on its model of `docs/agents/factory.md`; the gates and the score are in [serenity.md](serenity.md). How to start and talk to those agents in your coding agent is in [coding-agents.md](coding-agents.md).
 
 `docs/agents/factory.md` gives the labels, the check command, the verification skill, the conventions and the merge policy; operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). They should exist; if not, tell the person to run `/setup-factory` and stop. Below, `<main>` is the main branch and a label in angle brackets (`<ready>`) the label of that role. Stay on an up-to-date `<main>` in the main checkout, and never edit files there.
 
 `<skill dir>` is the folder of this file: give it to every agent you start, so it can read its role file.
+
+## 0. Check the machine
+
+When `docs/agents/factory.md` names a services check, run it before anything else, even before cleaning up:
+
+- It fails: **stop here**. Claim nothing, start no agent, and tell the person in one sentence what to start by hand (what `docs/agents/factory.md` says) and to say when it runs. Never start it yourself. When the person confirms, run this step again.
+- It succeeds: run the services start command in the main checkout (the only place it runs), then go on.
+
+A worker that reports `blocked` with a `services-down` reason is not a product block: tell the person what to restart, run this step again when they confirm, then write to that worker to resume. Start no other worker in the meantime.
 
 ## 1. Plan the batch
 
@@ -33,7 +42,7 @@ Then delete the local branches of merged pull requests that no worktree uses any
 
 ## 1b. Check each spec before building
 
-A spec with its checked line was checked with the person: start its worker. Otherwise check it first, with the most capable model you can choose, so that the questions do not depend on the builder's model: one background agent per issue, all started together, with this prompt:
+A spec with its checked line was checked with the person: start its worker. Otherwise check it first, on the model for spec checks, so that the questions do not depend on the builder's model: one background agent per issue, all started together, with this prompt:
 
 > Check the spec `<spec path>`, issue #<issue>. Run the `check-spec` skill on it in its « Before a build » mode: the person is not there.
 
@@ -48,7 +57,7 @@ For each issue, create its worktree yourself, on its branch, from an up-to-date 
 git fetch origin <main> && git worktree add -b <branch> <worktree path> origin/<main>
 ```
 
-The branch name follows the convention of `docs/agents/factory.md`. Then start one background agent per issue, all together, with this prompt:
+The branch name follows the convention of `docs/agents/factory.md`. Then start one background agent per issue, all together, on the model for workers, with this prompt:
 
 > You are a build-feature worker. Build issue #<issue> (« <title> »), spec `<spec path>`, in the worktree `<worktree path>` on branch `<branch>`; work only there. Read `<skill dir>/worker.md` and follow it exactly. The issue is already claimed. Finish with the report it describes.
 
@@ -59,13 +68,14 @@ A worker's context grows to hundreds of thousands of tokens, and every call it m
 ## 3. When a worker reports
 
 - `needs-spec`: while building, the worker found a product choice the check missed. It asked on the issue and handed it to the person. Tell the person which questions wait, keep its worktree for the follow-up, then start the next buildable issue if any.
+- `blocked` with a `services-down` reason: step 0.
 - `blocked`: the worker has labelled and commented the issue. Tell the person, then start the next buildable issue if any.
 - `reviewable`: its work is committed on its local branch, proven and checked, **not pushed**, with its pull request body in the file its report names. Review it (step 4), unless it only added the open findings after the last review: then ship it (step 4b).
 - `fixed`: it fixed a CI failure or a failed check the shipper reported. Ship it again (step 4b), without a new review.
 
 ## 4. Independent review, before any push
 
-The review runs locally, so CI only runs on work that passed it. Start a **fresh** reviewer, never the worker, with this prompt:
+The review runs locally, so CI only runs on work that passed it. Start a **fresh** reviewer, never the worker, on the model for reviewers, with this prompt:
 
 > Review the local branch `<branch>`, worktree `<worktree>`, which builds issue #<issue> (spec `<spec path>`). Read `<skill dir>/reviewer.md` and follow it exactly.
 
@@ -78,7 +88,7 @@ Give it nothing else: not the worker's report, not your reasoning. Note the bran
 
 ## 4b. Ship
 
-Start a fresh shipper, never the worker, on the cheapest capable model you can choose, in the background, with this prompt:
+Start a fresh shipper, never the worker, on the model for shippers, in the background, with this prompt:
 
 > Ship the branch `<branch>`, worktree `<worktree>`, for issue #<issue>. Task: <« push and open the pull request titled `<title>` » | « push and update pull request #<pr> » | « rebase, push and update pull request #<pr> »>. Read `<skill dir>/shipper.md` and follow it exactly.
 
