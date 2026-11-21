@@ -33,6 +33,8 @@ If the setup or a check fails because a shared service does not answer (`checks.
 
 Read the issue, the spec it links, the product context, and the code and verification features nearby. Turn each acceptance criterion into something you can prove.
 
+For each value a user writes (a configuration file, an environment variable, a command or URL parameter), list its edge forms before coding: a relative or `~` path, an empty value or file, two spellings of one value, a duplicate entry. Done when each one has a test, or a line in `scope_limits`.
+
 The orchestrator checked the spec before starting you. A product choice it still leaves open (something a user would see, or that changes what a figure means) is not yours: push your branch if it holds useful work, **Comment on an issue** with your questions (in the language for people, numbered, with the options and the one you recommend), **Move an issue's labels** from the working label to the needs-spec label, **Hand an issue to the person**, and report `needs-spec` with the questions in `blocked_reason`.
 
 Implementation choices a user never sees (a table, a query, a component split) stay yours; write a notable one down in `implementation_notes`, for the reviewer: it costs nothing. If you still had to settle a choice a user sees, because asking was not possible, write it in `product_choices` with the spec sentence you read and why it was not enough: each one costs the score 10 points.

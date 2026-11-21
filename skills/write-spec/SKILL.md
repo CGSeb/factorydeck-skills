@@ -20,7 +20,7 @@ Read the product context (`specs.product_context`) of `docs/agents/factory.yml`,
 
 Ground your recommendations in the code and the existing specs. Reuse a convention an earlier spec settled instead of asking it again, and cite it.
 
-Too big for one pull request (more than about a day of work for a person, several independent user goals, or criteria spread over several parts of the product that could ship apart, such as a data layer, an interface and a view of it)? Propose a split into several specs with dependencies between them, and write each one. A large pull request also costs its merge score (`build-feature`'s serenity.md), so a person has to merge it.
+Too big for one pull request (more than about a day of work for a person, several independent user goals, or criteria spread over several parts of the product that could ship apart, such as a data layer, an interface and a view of it)? Propose a split into several specs with dependencies between them, and write each one. A large pull request also costs its merge score (`build-feature`'s serenity.md), so a person has to merge it. Count on about 2000 changed lines at most, tests and stories included: a spec that adds stored data (a table, a migration), an API and a new screen together usually goes over, so propose one spec for the data and its API, and one for the screen.
 
 ## 2. Write it
 
