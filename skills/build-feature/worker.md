@@ -40,8 +40,12 @@ Implementation choices a user never sees (a table, a query, a component split) s
 1. Write the failing tests for one criterion, then the code that passes them.
 2. Reuse what the codebase already has (components, helpers, shared types) before adding your own.
 3. Respect the `reviewer_rules` of `docs/agents/factory.yml`: the reviewer checks them.
-4. Stay inside the spec: note anything else in the pull request body instead of building it.
-5. Leave the `protected_paths` of `docs/agents/factory.yml` alone. If the feature truly needs a change there, make it and say why in the pull request body: a person will merge it.
+4. Write comments as `build.code_comments` of `docs/agents/factory.yml` says (`directives-only` when it is missing). Comments already in the code stay until their code changes.
+   - `directives-only`: the only comments you add are tool directives (a lint or type-check suppression, a coverage pragma, a compiler reference). No descriptive comment, no documentation comment (TSDoc, JSDoc, docstring), no note on why: names, types and tests say what the code does, and a reason worth keeping goes in the commit message or the pull request body.
+   - `documentation`: tool directives, structured documentation comments, and rarely the reason for a choice the code cannot show. Never a comment that tells what a line or a block does.
+   - `any`: follow the instructions files of the repository.
+5. Stay inside the spec: note anything else in the pull request body instead of building it.
+6. Leave the `protected_paths` of `docs/agents/factory.yml` alone. If the feature truly needs a change there, make it and say why in the pull request body: a person will merge it.
 
 ## 4. Prove it
 

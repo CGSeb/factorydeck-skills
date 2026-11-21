@@ -25,7 +25,7 @@ When your task names the commit of the first review (« second round, since `<sh
 ## Check
 
 1. **Each acceptance criterion**: is it met, and does a test or a verification recipe really assert it (not only mention it)?
-2. **The rules for the reviewer**: each entry of `reviewer_rules` in `docs/agents/factory.yml`.
+2. **The rules for the reviewer**: each entry of `reviewer_rules` in `docs/agents/factory.yml`, and the comment policy `build.code_comments` (`directives-only` when missing), defined in « Build in small steps » of [worker.md](worker.md). Each comment the branch adds against it is a `minor` finding.
 3. **Bugs**: wrong edge cases (empty data, missing values, errors from a dependency), broken states, races, accessibility of new controls, regressions in features the diff touches.
 4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle.
 5. **Project rules**: what the instructions files ask about organisation, type safety and tests.

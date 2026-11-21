@@ -89,6 +89,9 @@ build:
   pull_request_title: "<the convention's form for a feature, with <Subject>>"
   # The full convention, with an example for each kind of change (feature, fix, test, docs).
   commit_notes: ""
+  # Comments builders may add to the code: directives-only (tool directives only), documentation
+  # (also documentation comments and a rare why), or any (the instructions files decide).
+  code_comments: directives-only
   auto_merge: true
   serenity_threshold: 80
   main_branch_protection: <true | false>
