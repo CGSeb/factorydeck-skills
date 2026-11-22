@@ -1,6 +1,6 @@
 ---
 name: check-spec
-description: "Check a spec for product choices it leaves open, before anyone builds it. Lists every choice a user would see or another feature would depend on, asks the person, and writes the answers into the spec. Use at the end of writing a spec, when asked to check, validate or complete a spec, and from build-feature before it starts a builder."
+description: "Check a spec for product choices it leaves open, before anyone builds it. Ranks every choice a user would see or another feature would depend on by severity, asks the person about those that change a behaviour or the data, and writes the answers into the spec. Use at the end of writing a spec, when asked to check, validate or complete a spec, and from build-feature before it starts a builder."
 ---
 
 # Check a spec
@@ -37,9 +37,22 @@ Five sweeps find what a reading misses, because sample data hides them:
 
 Choices a user never sees (file layout, internal names, query shape, component split) belong to the builder: leave them out.
 
-For each choice, write the options you see and the one you recommend, with one line of why. Ground it in the data and the code you read, not in guesses.
+### Severity of a choice
 
-Nothing open: say so in one line and stop.
+Rank each open choice by what happens if the builder gets it wrong, not by its subject. When two levels fit, take the higher one. `build-feature` uses this scale for the worker, the reviewer and the serenity score (the costs are in its serenity.md).
+
+| Level | What a wrong choice does | Examples |
+| --- | --- | --- |
+| `cosmetic` | Changes no behaviour and no meaning; fixed in one line | colour, spacing, the wording of a label, an icon |
+| `visible` | The user sees it, but actions and data stay the same; reversible without a migration | default sort, text of an empty state, column order, display rounding |
+| `behavior` | Changes what an action or a flow does | a default that triggers something, confirm or not, what a click chains to, a filtering rule, a URL or command format |
+| `data` | Changes what a figure means, what is stored, or a contract others consume; or cannot be taken back | which records count, a threshold or bucket, a new field or migration, an output format other features read |
+
+Only `behavior` and `data` choices are open: ask them, or post them before a build. A `cosmetic` or `visible` choice is left to the builder, who settles it, declares it with its level and pays a few points of serenity for it; do not ask it, and do not list it as open.
+
+For each open choice, write its level, the options you see and the one you recommend, with one line of why. Ground it in the data and the code you read, not in guesses.
+
+Nothing open at `behavior` or `data` level: say so in one line and stop.
 
 ## 3. With the person
 

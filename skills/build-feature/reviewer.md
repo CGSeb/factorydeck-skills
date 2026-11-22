@@ -27,7 +27,7 @@ When your task names the commit of the first review (« second round, since `<sh
 1. **Each acceptance criterion**: is it met, and does a test or a verification recipe really assert it (not only mention it)?
 2. **The rules for the reviewer**: each bullet of « Reviewer rules » in `docs/agents/factory-notes.md`, and the comment policy `build.code_comments` (`directives-only` when missing), defined in « Build in small steps » of [worker.md](worker.md). Each comment the branch adds against it is a `minor` finding.
 3. **Bugs**: wrong edge cases (empty data, missing values, errors from a dependency), broken states, races, accessibility of new controls, regressions in features the diff touches.
-4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle.
+4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle. Rank each one with the levels of « Severity of a choice » in the `check-spec` skill (`cosmetic`, `visible`, `behavior`, `data`), including those the worker declared in `product_choices`: give your own level, and take the higher one when two fit.
 5. **Project rules**: what the instructions files ask about organisation, type safety and tests.
 6. **Undeclared limits**: a case of the data or of the spec that the branch does not handle, and that the pull request body does not mention. A missing test of code that handles the case is a finding, not a limit.
 
@@ -46,7 +46,7 @@ End with this block, and nothing after it. `findings` holds only problems you ve
       "evidence": "…"
     }
   ],
-  "unsettled_choices": ["…"],
+  "unsettled_choices": [{ "level": "cosmetic | visible | behavior | data", "choice": "…", "worker_level": "level the worker declared, or null if undeclared" }],
   "risky_areas": ["…"],
   "undeclared_limits": ["…"],
   "confidence": "high | medium | low"
