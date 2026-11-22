@@ -27,7 +27,7 @@ Too big for one pull request (more than about a day of work for a person, severa
 Next number: one more than the highest in the specs folder. File name and headings follow `specs.file_name` and `specs.format` exactly. Write in the language the existing specs use.
 
 - **Status line**: the first value (draft).
-- **Depends-on line**: the numbers of the specs it needs, or « none ».
+- **Depends-on line**: the numbers of the specs it needs directly, or « none ». Leave out a spec another listed spec already depends on, directly or through others: the chain records it, and the line stays short as specs pile up.
 - **User goal**: one or two sentences, from the user's side.
 - **Acceptance criteria**: one checkbox each (`- [ ] …`). Each one is observable and precise enough to prove with a test or a verification recipe: name the wording, the order, the limits, the empty, missing and error cases.
 - **Rules**: what a figure means, which records count, thresholds, the data it reads.
@@ -43,7 +43,7 @@ Run the `check-spec` skill on the new spec, with the person, before anything els
 The spec reaches the main branch first (commit it on a branch and merge it, or commit on the main branch if the person works that way), because a builder starts from the main branch.
 
 1. **Create an issue**: the title format `issues.title`, the spec's issue label, and a body that links the spec on the main branch and repeats its depends-on line with the issue numbers (`Depends on: #12, #15`).
-2. When `issues.dependencies` is `blocking-links`, **Add a blocker** for each spec it depends on, even one whose issue is closed: `build-feature` reads the links first. Otherwise the depends-on line is the record.
+2. When `issues.dependencies` is `blocking-links`, **Add a blocker** for each spec of the depends-on line, even one whose issue is closed: `build-feature` reads the links first. Otherwise the depends-on line is the record.
 3. Once the spec is on the main branch with its checked line, **Move an issue's labels** to add the ready label. Before that, a builder would start from a main branch that lacks the spec.
 
 Done when the issue exists with its labels and dependencies, and the person has the link.
