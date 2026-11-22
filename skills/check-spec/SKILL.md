@@ -27,13 +27,14 @@ An open choice is anything the spec does not settle and the builder would have t
 - **How it behaves**: URL or command format and parameter names, what survives a reload or a restart, how it interacts with features already built, keyboard and focus.
 - **What other features must agree with**: a convention another spec already set, or one the next specs will need. Reuse a convention a spec already settled and cite it, instead of asking again.
 
-Five sweeps find what a reading misses, because sample data hides them:
+Six sweeps find what a reading misses, because sample data hides them:
 
 - **Missing values**: for each field the criteria show, find where it is stored. If it can be absent, the spec must say what is shown when it is, even when no sample record lacks it.
 - **Coded values**: for each coded field shown (a type, a category, a status), list every value the source or the code allows, not only those in the sample, and check that the spec says how each one is shown.
 - **Values that do not apply**: for each grouped or summary entry (a total, an « other » or « none » bucket, a parent of nested items), list the fields that have no meaning for it. The spec must say what each one shows, distinct from how it shows an unknown value.
 - **Inputs that can grow**: for each input the feature accepts and each collection it returns (a count, a page, a file, a time range, a batch), the spec must give its upper bound and what happens beyond it.
 - **Values a user writes**: for each configuration file, environment variable, command or URL parameter the feature reads, the spec must settle a relative path and a `~` path, an empty value and an empty file, two spellings of one value (a trailing `/`, letter case) and a duplicate entry. A new file format also names how it is parsed: a library the project does not use yet is the person's choice.
+- **Events read from a history**: for each history the feature reads or derives from (label changes, state changes, reports, comments), the spec must settle a repeated event, an event with no matching opposite (a removal with no addition), an event whose subject was deleted or renamed since, and two events at the same time.
 
 Choices a user never sees (file layout, internal names, query shape, component split) belong to the builder: leave them out.
 
