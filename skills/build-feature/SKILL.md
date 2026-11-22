@@ -40,6 +40,8 @@ Before planning, and after each merge, remove what merged pull requests left. A 
 - Merged and `git -C <path> status --short` empty: `git worktree remove <path>`, then `git branch -D <branch>`.
 - Merged but with changes: check that they hold nothing new. When `git -C <path> write-tree` names the tree of a commit of the branch (`git log --all --format='%H %T'`), they are a stale state already committed: `git worktree remove --force <path>` and delete the branch. Otherwise keep it and tell the person what it holds.
 
+Then the main checkout itself. When it is on a branch other than `<main>`, that branch's pull request is merged (**Merged pull requests of a branch**) and `git status --short` is empty: `git switch <main> && git pull --ff-only`. Otherwise leave it as it is and tell the person what it holds.
+
 Then delete the local branches of merged pull requests that no worktree uses any more.
 
 Leave each branch's factory folder (`factory/<branch>` in the repository's shared git directory, `git rev-parse --path-format=absolute --git-common-dir`): it holds the evidence, outside any worktree and never committed. Step 7 names it. Delete a factory folder once its branch is gone from `git branch` and no file in it changed for 30 days: `find <folder> -mtime -30 | head -1` prints nothing.
