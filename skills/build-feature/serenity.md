@@ -64,12 +64,18 @@ Write it to a file, in the language for people, for whoever reads the pull reque
 ```markdown
 ## Serenity: 85/100 (threshold 80)
 
-- −5: 1 review finding fixed (…)
-- −10: a `behavior` choice the spec did not settle (…)
-- −3: a `visible` choice the spec did not settle (…)
+- −5: 1 review finding fixed (…). Fixed.
+- −10: a limit the reviewer found undeclared (…). Declared in the body.
+- −10: a `behavior` choice the spec did not settle (…). Open.
 
 Gates: all passed. Review: 1 round, confidence high.
+
+### What you decide
+
+- The `behavior` choice: <the options>. Recommended: <one>, because <one line>.
 ```
+
+Each line ends with where that fact stands now: `Fixed.`, `Declared in the body.` or `Open.` A pull request handed to the person ends with « What you decide »: one line per open choice and per risk the review raised, with the option you recommend. A pull request that merges leaves that section out.
 
 ## 4. Merge or hand over
 
