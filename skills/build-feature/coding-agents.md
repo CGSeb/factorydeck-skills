@@ -25,4 +25,6 @@ Run the roles yourself, one issue at a time, in the order of `SKILL.md`, working
 - Read `shipper.md` and ship.
 - Score with `serenity.md`.
 
+When an issue is done (merged, handed to the person, or blocked), end that message with the work item line of `write-spec` step 4, `Work item: #<issue>`, before you take the next issue: no agent description names the issue here, and that line ties the work since the previous one to it.
+
 Never skip the review or the gates because the roles share one agent.

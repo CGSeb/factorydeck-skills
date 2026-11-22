@@ -11,7 +11,7 @@ You are the **orchestrator**. You never write feature code: you plan, start one 
 
 `<skill dir>` is the folder of this file: give it to every agent you start, so it can read its role file.
 
-Give every agent you start a short description that names its role and its issue as `#<issue>`, and nothing else: `check-spec #<issue>`, `Worker for #<issue>`, `Review #<issue>` (every round), `Ship #<issue>`. Coding agents record that description with the agent's transcript; FactoryDeck reads its role and its issue there, and the branch an agent records is the one it was started from (`<main>`), not its worktree's.
+Give every agent you start a short description that names its role and its issue as `#<issue>`, and nothing else: `check-spec #<issue>`, `Worker for #<issue>`, `Review #<issue>` (every round), `Ship #<issue>`. Coding agents record that description with the agent's transcript; FactoryDeck reads its role and its issue there, and the branch an agent records is the one it was started from (`<main>`), not its worktree's. Write no `Work item:` line yourself while agents run: your own work is shared among their issues.
 
 ## 0. Check the machine
 
