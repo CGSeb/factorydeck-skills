@@ -4,7 +4,7 @@
 
 | Need | Claude Code | Codex | Without it |
 | --- | --- | --- | --- |
-| **Start a background agent** with a prompt | `Agent` tool with `run_in_background: true` | `spawn_agent` (needs `multi_agent = true` under `[features]` in Codex's `config.toml`) | Run the role yourself, one issue at a time (see below) |
+| **Start a background agent** with a prompt and its description (`SKILL.md`) | `Agent` tool with `run_in_background: true` and the description in `description` | `spawn_agent` (needs `multi_agent = true` under `[features]` in Codex's `config.toml`) | Run the role yourself, one issue at a time (see below) |
 | **Start several at once** | several `Agent` calls in one message | several `spawn_agent` calls in one response | One at a time |
 | **Wait for a report** | you are notified when one finishes; never poll | `wait_agent` | — |
 | **Write to an agent that already reported** | `SendMessage` with its id | send it input if the installed Codex can; otherwise the fallback | Start a fresh agent with the same role, worktree and the message (see below) |
