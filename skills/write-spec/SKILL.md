@@ -46,4 +46,6 @@ The spec reaches the main branch first (commit it on a branch and merge it, or c
 2. When `issues.dependencies` is `blocking-links`, **Add a blocker** for each spec of the depends-on line, even one whose issue is closed: `build-feature` reads the links first. Otherwise the depends-on line is the record.
 3. Once the spec is on the main branch with its checked line, **Move an issue's labels** to add the ready label. Before that, a builder would start from a main branch that lacks the spec.
 
-Done when the issue exists with its labels and dependencies, and the person has the link.
+4. Tie this session to the issue, so a dashboard that reads agent logs counts the spec's work on it and on its role: end your last message with the line `Work item: #<n> (spec-writer)` on its own, exactly, with the issue number. The text in parentheses is the role, a lowercase name; other skills write their own. When your agent lets you rename the session, also put `#<n>` at the start of its title.
+
+Done when the issue exists with its labels and dependencies, the person has the link, and the `Work item: #<n> (spec-writer)` line is written.

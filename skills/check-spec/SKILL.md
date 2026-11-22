@@ -66,6 +66,8 @@ Keep the spec's tone and language. Once nothing is left open, add the checked li
 
 If the person leaves a question open on purpose, write it in out of scope or as a criterion that names the default, so a builder does not ask it again.
 
+When the spec already has an issue (not when `write-spec` runs you: it writes the line itself), end your last message with the work item line of `write-spec` step 4, `Work item: #<issue> (spec-checker)`.
+
 ## Before a build
 
 The person is not there and nothing has been built yet. Change no file. Write every question in **one** comment, in the language for people, one numbered question per choice, each with its options and the one you recommend, then:

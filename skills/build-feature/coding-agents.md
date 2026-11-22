@@ -25,4 +25,6 @@ Run the roles yourself, one issue at a time, in the order of `SKILL.md`, working
 - Read `shipper.md` and ship.
 - Score with `serenity.md`.
 
+No agent description names the issue or the role here, so end the message that finishes each role with the work item line of `write-spec` step 4: `Work item: #<issue> (builder)` after building or reworking, `(reviewer)` after each review, `(shipper)` after shipping and scoring. Each line ties the work since the previous one to that issue and role.
+
 Never skip the review or the gates because the roles share one agent.
