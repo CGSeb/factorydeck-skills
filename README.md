@@ -1,28 +1,51 @@
-# FactoryDeck skills
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg" />
+    <img src="docs/assets/banner-light.svg" alt="FactoryDeck skills: a software factory of coding agents, specs in, reviewed and merged features out" width="100%" />
+  </picture>
+</p>
 
-Skills for running a software factory of coding agents on any project: write and check specs, build features with independent review and a merge gate, prove them in the real app, and learn from each run.
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0f766e" alt="MIT license" /></a>
+  <img src="https://img.shields.io/badge/dependencies-none-0f766e" alt="No dependencies" />
+  <a href="https://agentskills.io"><img src="https://img.shields.io/badge/Agent%20Skills-compatible-0f766e" alt="Agent Skills compatible" /></a>
+  <a href="https://github.com/CGSeb/factorydeck"><img src="https://img.shields.io/badge/dashboard-FactoryDeck-0f766e" alt="Dashboard: FactoryDeck" /></a>
+</p>
 
-They are plain Markdown plus `git` and your git host's CLI (`gh` for GitHub, `glab` for GitLab). No Node, no Python, no Docker, nothing to build: they work in any language, on any stack, with Claude Code, Codex, GitHub Copilot and other agents that read [Agent Skills](https://agentskills.io). The only script is an optional POSIX shell hook.
+<p align="center">
+  <a href="#the-skills">The skills</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#watch-it-run-with-factorydeck">FactoryDeck</a> ·
+  <a href="docs/configuration.md">Configuration</a> ·
+  <a href="docs/guardrails.md">Guardrails</a>
+</p>
 
-> Status: early. Used daily with Claude Code on GitHub; Codex, Copilot and GitLab follow the same files but have had less use. Reports welcome.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/workflow-dark.svg" />
+  <img src="docs/assets/workflow-light.svg" alt="The workflow: setup-factory once per repository, then write-spec, check-spec, build-feature and retro for each feature. Inside build-feature, each issue goes through a worker, a reviewer, a shipper and a serenity score, then is merged or goes to a person." width="100%" />
+</picture>
 
-## The workflow
+**FactoryDeck skills turn your coding agent into a software factory.** You write a spec with it; the factory settles its open questions, builds it in its own worktree, has it reviewed by a fresh agent, scores how safe it is to merge, and merges it or hands it to you. After each run, a retro makes the next one better.
 
-```text
-/setup-factory  ──▶  /write-spec  ──▶  /check-spec  ──▶  /build-feature  ──▶  /retro
-  once per repo       one per feature    settles open      workers, review,      learn from
-                      + its issue        product choices   score, merge          the run
-```
+- **Plain Markdown.** The skills call `git` and your git host's CLI, nothing else: no Node, no Python, no Docker, nothing to build. They work in any language, on any stack.
+- **Any coding agent.** Claude Code, Codex, GitHub Copilot, Gemini CLI and every agent that reads [Agent Skills](https://agentskills.io).
+- **GitHub or GitLab.** Every host command lives in one file, checked against your installed CLI.
+- **Hard limits, not promises.** Branch protection, agent permissions and a merge gate keep a person in the loop where it matters. See [Guardrails](docs/guardrails.md).
 
-| Skill | What it does |
-| --- | --- |
-| `setup-factory` | Explores the repository and asks you, one section at a time: GitHub or GitLab, which coding agents, spec format, labels, check command, merge policy. Writes `docs/agents/factory.yml`, `docs/agents/factory-notes.md` and `docs/agents/git-host.md` (the exact CLI commands for your host, checked against your installed CLI), plus each agent's guardrails. Run it once. |
-| `write-spec` | Interviews you on a feature, writes a spec with testable acceptance criteria, opens its issue with its dependencies. |
-| `check-spec` | Finds every product choice a spec leaves open and gets it settled, with you or as questions on the issue. |
-| `build-feature` | The orchestrator. One background worker per buildable issue, each in its own git worktree; a fresh reviewer before any push; a cheaper shipper for push, pull or merge request and CI; gates and a serenity score decide whether it merges or goes to you. Agents without background subagents run the same roles one after another. |
-| `create-verification-skill` | Generates `verify-<app>`, a project-local skill that launches your app, drives it like a user and keeps evidence, with a feature map. Workers use it to prove each criterion. |
-| `maintain-verification-skill` | Keeps that feature map honest as the app changes. |
-| `retro` | Reads a session's logs (Claude Code or Codex) and proposes changes to checks, skills, reviewer rules and `AGENTS.md`, so the next run goes better. |
+> [!NOTE]
+> Early days. Used daily with Claude Code on GitHub; Codex, Copilot and GitLab follow the same files but have had less use. Reports welcome.
+
+## The skills
+
+|                                      |                                                                                                                                                       |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🧰 **`setup-factory`**               | Run once. Asks you, one section at a time, for your git host, coding agents, spec format, labels, check command and merge policy, and writes them to `docs/agents/`. |
+| ✍️ **`write-spec`**                  | Interviews you on a feature, writes a spec with testable acceptance criteria, and opens its issue with its dependencies.                             |
+| 🔍 **`check-spec`**                  | Finds every product choice a spec leaves open and gets it settled, with you or as questions on the issue.                                            |
+| 🏭 **`build-feature`**               | The orchestrator. One background worker per buildable issue, a fresh reviewer before any push, a cheaper shipper for the pull request and CI, then gates and a serenity score decide: merge, or you. |
+| 🧪 **`create-verification-skill`**   | Generates `verify-<app>`, a project skill that drives your app like a user and keeps evidence. Workers use it to prove each criterion.                |
+| 🗺️ **`maintain-verification-skill`** | Keeps that skill's feature map honest as the app changes.                                                                                            |
+| 🔁 **`retro`**                       | Reads a session's logs and proposes changes to checks, skills, reviewer rules and `AGENTS.md`, so the next run goes better.                          |
 
 ## Install
 
@@ -92,33 +115,21 @@ Or copy the folders of `skills/` into your agent's skills folder (`.agents/skill
 
 Then, in your project, run `/setup-factory` (or ask your agent to « run the setup-factory skill »).
 
-### Requirements
+You need `git`, and the [GitHub CLI](https://cli.github.com/) or the [GitLab CLI](https://gitlab.com/gitlab-org/cli), logged in. See [Configuration](docs/configuration.md#requirements) for the details.
 
-- `git`.
-- **GitHub**: the [GitHub CLI](https://cli.github.com/), logged in (`gh auth login`). **GitLab**: the [GitLab CLI](https://gitlab.com/gitlab-org/cli), logged in (`glab auth login`). GitLab's blocking links between issues need Premium or Ultimate; on the free tier, dependencies live in each spec's depends-on line, which the skills read anyway.
-- A POSIX shell for the stop gate: any Linux or macOS shell, Git Bash or WSL on Windows.
+## Watch it run with FactoryDeck
 
-## Your project, your vocabulary
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/CGSeb/factorydeck/raw/main/docs/assets/loop-dark.svg" />
+  <img src="https://github.com/CGSeb/factorydeck/raw/main/docs/assets/loop-light.svg" alt="The improvement loop: the factory runs, FactoryDeck shows it, you spot blockers and frictions, you tune the factory" width="100%" />
+</picture>
 
-Nothing about your project is hard-coded. `docs/agents/factory.yml` holds every setting in plain YAML, validated by [a JSON Schema](skills/setup-factory/factory.schema.json): edit it by hand, or from [FactoryDeck](https://github.com/CGSeb/factorydeck) once it connects your repositories. The skills read your spec headings, your labels, your check command, your models and your language from it. What needs more than a value goes in `docs/agents/factory-notes.md`, one section each: notes on the checks, the commit convention, main branch protection and the rules for the reviewer. `docs/agents/git-host.md` holds the exact `gh` or `glab` command for each operation the skills name, so a CLI that changes a flag is fixed in one place. Keep an existing spec format; `setup-factory` maps it instead of replacing it.
+[**FactoryDeck**](https://github.com/CGSeb/factorydeck) is the dashboard of this factory. It reads your agent sessions and your issues, and shows how each one went: where a person had to step in, which errors and frictions slowed the agents, and how the share of issues merged without a person grows from one retro to the next. The skills work without it.
 
-Instructions for agents go to `AGENTS.md`. With Claude Code, `CLAUDE.md` imports it with a single `@AGENTS.md` line.
-
-## Guardrails
-
-A rule written in a skill can be argued with; a platform setting cannot. So the hard limits live in the platforms:
-
-- **Main branch protection** on the git host: CI must pass and the branch must be up to date before any merge. GitLab offers it on every tier; GitHub on public repositories, or private ones on paid plans.
-- **Agent permissions**: `setup-factory` denies Claude Code reading `.env` files, pushing to the main branch and force-pushing, and sets the closest equivalent for the other agents.
-- **The merge gate** in `build-feature`: a pull request that touches the rules agents are graded by, adds a lint or test suppression, or edits a migration always goes to a person.
-
-### Stop gate
-
-`hooks/before-stop.sh` runs your check command before an agent stops with work that is not on the main branch yet, and sends it back while the check fails (three times at most). It does nothing in a repository without `docs/agents/factory.yml`, and `checks.stop_gate: false` there turns it off. The Claude Code plugin installs it; any other agent with a stop hook can call `sh <plugin folder>/hooks/before-stop.sh` (exit code 2 means « keep working »).
-
-## Measuring the factory
-
-[FactoryDeck](https://github.com/CGSeb/factorydeck) reads your agent sessions and shows what each issue and each role (worker, reviewer, shipper) cost, the review rounds, the outcomes and the frictions. The skills work without it.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/CGSeb/factorydeck/raw/main/docs/assets/screenshots/issue-dark.png" />
+  <img src="https://github.com/CGSeb/factorydeck/raw/main/docs/assets/screenshots/issue-light.png" alt="FactoryDeck issue page: how an issue got merged, from the builder through a refused review, a rework and a second review to the shipper" />
+</picture>
 
 ## Credits
 
