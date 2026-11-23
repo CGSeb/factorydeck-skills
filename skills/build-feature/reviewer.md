@@ -27,7 +27,7 @@ When your task names the commit of the first review (« second round, since `<sh
 1. **Each acceptance criterion**: is it met, and does a test or a verification recipe really assert it (not only mention it)?
 2. **The rules for the reviewer**: each bullet of « Reviewer rules » in `docs/agents/factory-notes.md`, and the comment policy `build.code_comments` (`directives-only` when missing), defined in « Build in small steps » of [worker.md](worker.md). Each comment the branch adds against it is a `minor` finding.
 3. **Bugs**: wrong edge cases (empty data, missing values, errors from a dependency), broken states, races, accessibility of new controls, regressions in features the diff touches.
-4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle. Rank each one with the levels of « Severity of a choice » in the `check-spec` skill (`cosmetic`, `visible`, `behavior`, `data`), including those the worker declared in `product_choices`: give your own level, and take the higher one when two fit.
+4. **Scope**: anything built that the spec does not ask for, any product choice the spec does not settle. Rank each one with the levels of « Severity of a choice » in the `check-spec` skill (`cosmetic`, `visible`, `behavior`, `data`), including those the worker declared in `product_choices`: give your own level, and take the higher one when two fit. For each choice, the worker's and yours, search for the sentence that settles it in the spec's criteria, rules and expected proof, and in each spec it names, by the subject's words. A choice such a sentence settles goes in `settled_choices`, with that sentence quoted exactly and its file; only the others go in `unsettled_choices`. The score counts your lists, not the worker's, and nobody searches the specs after you.
 5. **Project rules**: what the instructions files ask about organisation, type safety and tests.
 6. **Undeclared limits**: a case of the data or of the spec that the branch does not handle, and that the pull request body does not mention. A missing test of code that handles the case is a finding, not a limit.
 
@@ -47,6 +47,7 @@ End with this block, and nothing after it. `findings` holds only problems you ve
     }
   ],
   "unsettled_choices": [{ "level": "cosmetic | visible | behavior | data", "choice": "…", "worker_level": "level the worker declared, or null if undeclared" }],
+  "settled_choices": [{ "choice": "…", "quote": "the exact sentence that settles it", "spec": "<spec file>" }],
   "risky_areas": ["…"],
   "undeclared_limits": ["…"],
   "confidence": "high | medium | low"
