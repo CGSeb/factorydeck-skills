@@ -99,7 +99,7 @@ End each report with this block, and nothing after it (`pr` is `null` until the 
 
 Declare every limit you know, in one of two lists:
 
-- `partial_proofs`: a criterion, or a case it names, proven only by tests and not in the real app, for example because the local data has no such case.
+- `partial_proofs`: a criterion, or a case it names, proven only by tests and not in the real app, for example because the local data has no such case. Name the layers the case goes through and the test of each, or the layer no test covers: the score counts only an uncovered layer (`serenity.md`).
 - `scope_limits`: what works here but would need more beyond what the spec asks (more data, another format, another platform). It costs nothing to declare; a limit the reviewer finds undeclared costs more than a declared one.
 
 ## When the orchestrator writes back
