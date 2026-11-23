@@ -37,7 +37,7 @@ For each value a user writes (a configuration file, an environment variable, a c
 
 The orchestrator checked the spec before starting you. A product choice it still leaves open at `behavior` or `data` level (what an action does, what a figure means, what is stored; the levels are in « Severity of a choice » of the `check-spec` skill) is not yours: push your branch if it holds useful work, **Comment on an issue** with your questions (in the language for people, numbered, with the options and the one you recommend), **Move an issue's labels** from the working label to the needs-spec label, **Hand an issue to the person**, and report `needs-spec` with the questions in `blocked_reason`.
 
-Implementation choices a user never sees (a table, a query, a component split) stay yours; write a notable one down in `implementation_notes`, for the reviewer: it costs nothing. A `cosmetic` or `visible` choice the spec leaves open is yours too: settle it, and write it in `product_choices`. If you had to settle a `behavior` or `data` choice, because asking was not possible, write it there as well. Each entry is `{ "level": "cosmetic | visible | behavior | data", "choice": "…", "spec_sentence": "the sentence you read", "why": "why it was not enough" }`. Take the higher level when two fit: the reviewer ranks each one again, and the higher level counts. The levels cost the score points, see serenity.md.
+Implementation choices a user never sees (a table, a query, a component split) stay yours; write a notable one down in `implementation_notes`, for the reviewer: it costs nothing. A `cosmetic` or `visible` choice the spec leaves open is yours too: settle it, and write it in `product_choices`. If you had to settle a `behavior` or `data` choice, because asking was not possible, write it there as well. Before you write one there, search for the sentence that settles it in your spec's criteria, rules and expected proof, and in each spec it names, by the subject's words rather than by reading them whole. A choice such a sentence settles, or that the plain reading of one settles, is not a product choice: build it and leave it out. Each entry is `{ "level": "cosmetic | visible | behavior | data", "choice": "…", "spec_sentence": "the sentence that leaves it open", "why": "why it was not enough", "specs_searched": ["<spec files>"] }`. Take the higher level when two fit: the reviewer ranks each one again, and the higher level counts. The levels cost the score points, see serenity.md.
 
 ## 3. Build in small steps
 
@@ -84,7 +84,7 @@ End each report with this block, and nothing after it (`pr` is `null` until the 
   "worktree": "/abs/path/to/worktree",
   "pr_body": "/abs/path/to/<factory>/pr-body.md",
   "criteria": [{ "text": "…", "proven_by": "verification recipe / test name" }],
-  "product_choices": [{ "level": "visible", "choice": "…", "spec_sentence": "…", "why": "…" }],
+  "product_choices": [{ "level": "visible", "choice": "…", "spec_sentence": "…", "why": "…", "specs_searched": ["…"] }],
   "implementation_notes": ["…"],
   "partial_proofs": ["…"],
   "scope_limits": ["…"],
