@@ -1,0 +1,3 @@
+interface:
+  display_name: "Check Bug"
+  short_description: "Fill the gaps of a bug report before a fix"
