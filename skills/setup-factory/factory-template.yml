@@ -85,6 +85,21 @@ issues:
     review: agent:review
     blocked: agent:blocked
 
+# Bug tickets. Leave this section out when the repository does not use the bug skills.
+# A bug report is always the body of its issue. A bug issue carries this label instead of
+# issues.labels.spec, plus the same flow labels; the label differs from every label above.
+bugs:
+  label: bug
+  branch_name: "<the repository's branch pattern for a fix, with NNN and a short name>"
+  pull_request_title: "<the convention's form for a fix, with <Subject>>"
+  # The exact headings of a bug report. It also reuses the depends-on and checked lines of specs.format.
+  format:
+    sections:
+      observed: "## Observed"
+      expected: "## Expected"
+      steps: "## Steps to reproduce"
+      environment: "## Environment"
+
 build:
   parallel_workers: 3
   branch_name: "<the repository's branch pattern, with NNN and a short name>"

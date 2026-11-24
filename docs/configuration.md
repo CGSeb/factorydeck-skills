@@ -30,6 +30,30 @@ The product context never goes into `AGENTS.md`: the instructions file is loaded
 
 Instructions for agents go to `AGENTS.md`. With Claude Code, `CLAUDE.md` imports it with a single `@AGENTS.md` line.
 
+## Bug tickets
+
+The optional `bugs` section says how the repository handles bug tickets. Without it, the repository does not use the bug skills, and the file stays valid.
+
+```yaml
+bugs:
+  label: bug
+  branch_name: "fix/NNN-short-name"
+  pull_request_title: "fix: <Subject>"
+  format:
+    sections:
+      observed: "## Observed"
+      expected: "## Expected"
+      steps: "## Steps to reproduce"
+      environment: "## Environment"
+```
+
+- `label`: the label that marks an issue as a bug. It must differ from every label of `issues.labels`, ignoring letter case (labels are case-insensitive on GitHub): otherwise `build-feature` would take bugs, or a flow label would mark every issue as a bug. The schema cannot compare two fields, so `setup-factory` enforces it.
+- `branch_name`: the branch of a fix, with `NNN` (the issue number) and a short name, like `build.branch_name`.
+- `pull_request_title`: the pull request title of a fix, with `<Subject>`, like `build.pull_request_title`.
+- `format.sections`: the exact headings of a bug report: what happens (`observed`), what should happen (`expected`), how to make it happen (`steps`), and where (`environment`).
+
+A bug report always lives in the body of its issue, whatever `specs.location` says. It reuses the depends-on and checked lines of `specs.format`, and no other key of it. Its title is a plain name, with no number part. A bug issue carries `bugs.label` instead of `issues.labels.spec`, plus the same flow labels as a spec (`ready`, `working`, `review`, `needs_spec`, `blocked`): `build-feature` takes only issues with the spec label, so it never takes a bug.
+
 ## Requirements
 
 - `git`.
