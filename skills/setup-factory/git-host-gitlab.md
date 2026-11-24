@@ -12,6 +12,7 @@ Issues, merge requests and CI for this repository live on GitLab. Every operatio
 
 - **List the queue**: `glab issue list --label "<spec>,<ready>" --output json`, then sort by title.
 - **Read an issue**: `glab issue view <n> --output json`
+- **List open issues of a label**: `glab issue list --label <label> --order updated_at --sort desc --per-page 100 --output json` (the 100 most recently updated)
 - **Open blockers**: `glab api projects/:id/issues/<n>/links`, keeping the links whose `link_type` is `is_blocked_by` and whose `state` is `opened`. Blocking links need GitLab Premium or Ultimate; on the free tier there are none, and the spec's depends-on line is the only record of dependencies.
 - **Add a blocker**: `glab issue note <n> --message "/blocked_by #<blocker>"` (a quick action; Premium or Ultimate). On the free tier, skip it: the issue description repeats the spec's depends-on line.
 - **Create an issue**: `glab issue create --title "<title>" --label <label> --description "$(cat <file>)" --yes`

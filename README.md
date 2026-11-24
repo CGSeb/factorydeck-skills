@@ -42,6 +42,7 @@
 | 🧰 **`setup-factory`**               | Run once. Asks you, one section at a time, for your git host, coding agents, spec format, labels, check command and merge policy, and writes them to `docs/agents/`. |
 | ✍️ **`write-spec`**                  | Interviews you on a feature, writes a spec (a file or the issue itself) with testable criteria, and opens its issue with its dependencies.                           |
 | 🔍 **`check-spec`**                  | Finds every product choice a spec leaves open and gets it settled, with you or as questions on the issue.                                            |
+| 🐛 **`report-bug`**                  | Interviews you on a bug, finds where in the code it probably lives, checks the open bugs for the same one, and opens a bug issue that `check-bug` completes, ready for `fix-bug`. |
 | 🐞 **`check-bug`**                   | Finds what a bug report leaves a debugger to guess (steps, expected behaviour, version) and gets it filled, with you or as questions on the issue. Bugs go `report-bug` → `check-bug` → `fix-bug`. |
 | 🏭 **`build-feature`**               | The orchestrator. One background worker per buildable issue, a fresh reviewer before any push, a cheaper shipper for the pull request and CI, then gates and a serenity score decide: merge, or you. |
 | 🧪 **`create-verification-skill`**   | Generates `verify-<app>`, a project skill that drives your app like a user and keeps evidence. Workers use it to prove each criterion.                |
