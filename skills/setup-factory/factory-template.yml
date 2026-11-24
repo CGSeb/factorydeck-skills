@@ -11,6 +11,10 @@
 
 version: 2
 
+# Optional. The name tools such as FactoryDeck show for this project; without it, the root folder name.
+# project:
+#   name: "<Project name>"
+
 repository:
   git_host: <github | gitlab>
   # Path of the file that holds the exact CLI command of each operation the skills name in bold.

@@ -18,6 +18,14 @@
   },
   "properties": {
     "version": { "const": 2 },
+    "project": {
+      "description": "Optional. How tools such as FactoryDeck name this project.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/nonEmpty", "description": "Display name; the root folder name when absent." }
+      }
+    },
     "repository": {
       "type": "object",
       "required": ["git_host", "git_host_commands", "main_branch", "merge_method"],
