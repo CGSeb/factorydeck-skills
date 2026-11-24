@@ -5,7 +5,7 @@ description: "Fix bugs from their bug issues (GitHub or GitLab) with a team of a
 
 # Fix bugs
 
-You are the **orchestrator** of `build-feature`, for bug issues. You never write code: you plan, start one debugger per bug, have each fix reviewed, score it and merge it or hand it to a person. Debuggers follow [debugger.md](debugger.md). Everything else is `build-feature`'s, read from its folder beside this one: its [SKILL.md](../build-feature/SKILL.md) for every step this file does not replace, [reviewer.md](../build-feature/reviewer.md), [shipper.md](../build-feature/shipper.md), [serenity.md](../build-feature/serenity.md) with [gates.sh](../build-feature/gates.sh), and [coding-agents.md](../build-feature/coding-agents.md) for starting and talking to agents. Read `build-feature`'s SKILL.md first: where it says worker, read debugger; where it says spec, read bug report.
+You are the **orchestrator** of `build-feature`, for bug issues. You never write code: you plan, start one debugger per bug, have each fix reviewed, score it and merge it or hand it to a person. Debuggers follow [debugger.md](debugger.md); reviewers of a fix follow [reviewer.md](reviewer.md), on top of `build-feature`'s. Everything else is `build-feature`'s, read from its folder beside this one: its [SKILL.md](../build-feature/SKILL.md) for every step this file does not replace, [reviewer.md](../build-feature/reviewer.md), [shipper.md](../build-feature/shipper.md), [serenity.md](../build-feature/serenity.md) with [gates.sh](../build-feature/gates.sh), and [coding-agents.md](../build-feature/coding-agents.md) for starting and talking to agents. Read `build-feature`'s SKILL.md first: where it says worker, read debugger; where it says spec, read bug report.
 
 `docs/agents/factory.yml` gives the bug settings (`bugs`) beside everything `build-feature` reads. Without it, or with a `factory.yml` that has no `bugs` section, say what is missing, tell the person to run `/setup-factory`, and stop before claiming anything.
 
@@ -58,18 +58,32 @@ As `build-feature` steps 4 to 7, with these prompts and rules:
 
 - **Review**: a fresh reviewer, on `agents.models.reviewer`, with this prompt:
 
-  > Review the local branch `<branch>`, worktree `<worktree>`, which fixes bug issue #<issue>. The spec is the bug report, the body of issue #<issue>: its expected section is the only acceptance criterion, and the reproduction test the debugger kept must assert it. Read `<build dir>/reviewer.md` and follow it exactly.
+  > Review the local branch `<branch>`, worktree `<worktree>`, which fixes bug issue #<issue>. The spec is the bug report, the body of issue #<issue>: its expected section is the only acceptance criterion, and the reproduction test the debugger kept must assert it. Read `<skill dir>/reviewer.md` and follow it exactly; it points to `<build dir>/reviewer.md` for the parts it shares.
 
-  Findings go to the debugger, with the same rounds and rules.
+  Findings go to the debugger, with the same rounds and rules. A `blocker` finding on reproduction means the debugger rewrites the test. Every round runs « Fails on main » of [reviewer.md](reviewer.md) again, the second one included.
 - **Ship**: a fresh shipper, on `agents.models.shipper`, told to read `<build dir>/shipper.md`. The pull request title follows `bugs.pull_request_title`, with the subject of the debugger's main commit.
-- **Gates**: [serenity.md](../build-feature/serenity.md), with two gates replaced for a fix:
+- **Gates**: [serenity.md](../build-feature/serenity.md), with two gates replaced and two added for a fix, the last two read from the last review's report:
 
   | Gate | Passes when |
   | --- | --- |
   | One issue | the pull request closes exactly one issue, and it carries `bugs.label` |
   | No spec | the diff changes no spec file (`gates.sh` lists none under « specs touched » with `specs.location: repository`), and the body of the issue it closes is not ticked: a bug report has no criteria |
+  | Reproduced | `reproduction.result` is `failed-on-assertion` |
+  | Root cause | the pull request body has a `## Root cause` section with content, and `root_cause.verdict` is `confirmed` |
 
-  Every other gate and every line of the score stays as in serenity.md.
+  A failed gate refuses the merge and hands the pull request to the person, like every gate of serenity.md, with the gate's name and the reviewer's reason (the result and its excerpt, or the verdict and its `why`) among the reasons. Every other gate and every line of the score stays as in serenity.md.
+- **Serenity report**: the breakdown of serenity.md, with two more lines right after its `Review:` line, each on its own line:
+
+  ```markdown
+  Gates: all passed. Review: 1 round, confidence high.
+  Root cause: <root_cause.sentence>
+  Reproduced: failed on main
+  ```
+
+  - `Root cause: ` then the last review's `root_cause.sentence` on one line (line breaks become spaces), at most 200 characters: a longer one is cut at 199 and ends with `…`. With no sentence, `Root cause: none`.
+  - `Reproduced: ` then, from `reproduction.result`: `failed on main` (`failed-on-assertion`), `passed on main` (`passed`), `did not run on main` (`failed-to-run`) or `no test` (`no-test`).
+
+  These words are fixed: FactoryDeck matches `Root cause:`, `Reproduced:` and the four values exactly. Only `fix-bug` writes them; every other line keeps serenity.md's format, and `build-feature`'s reports do not change.
 - **Plan again** (`build-feature` step 6) means step 1 of this file.
 - **Finish** (`build-feature` step 7): the table names, for each bug, its pull request, score and outcome, or the reason and the questions it waits on, and its factory folder.
 
