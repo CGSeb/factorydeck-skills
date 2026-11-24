@@ -49,7 +49,7 @@ Implementation choices a user never sees (a table, a query, a component split) s
    - `documentation`: tool directives, structured documentation comments, and rarely the reason for a choice the code cannot show. Never a comment that tells what a line or a block does.
    - `any`: follow the instructions files of the repository.
 5. Stay inside the spec: note anything else in the pull request body instead of building it.
-   - Add rather than change what other features rely on (defined under the score table of [serenity.md](serenity.md)). When the spec requires such a change, make it and write it in `shared_changes` with the sentence that requires it: one that asks for it, or one no other way can meet. A change no sentence requires costs the score points: write it there with a `null` sentence, and say in the pull request body why adding was not enough.
+   - Add rather than change what other features rely on (defined under the score table of [serenity.md](serenity.md)). When the spec requires such a change, make it and write it in `shared_changes` with the sentence that requires it: one that asks for it, or one no other way can meet. A change of behaviour or contract no sentence requires costs the score points: write it there with a `null` sentence, and say in the pull request body why adding was not enough. A refactor that keeps what other features get (moved or extracted code, a rename everywhere, an optional parameter whose absence keeps the old behaviour) costs nothing: write it there too, so the reviewer can confirm it.
 6. Leave the `protected_paths` of `docs/agents/factory.yml` alone. If the feature truly needs a change there, make it and say why in the pull request body: a person will merge it.
 
 ## 4. Prove it
