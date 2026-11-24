@@ -1,6 +1,6 @@
 {
   "name": "factorydeck-skills",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Skills for running a software factory of coding agents on any project, with Claude Code, Codex, GitHub Copilot and other agents, on GitHub or GitLab: write and check specs, build features with independent review and a merge gate, prove them in the real app, and learn from each run.",
   "author": {
     "name": "CGSeb",
