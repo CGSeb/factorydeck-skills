@@ -83,10 +83,31 @@
       "type": "object",
       "required": ["folder", "file_name", "product_context", "format"],
       "additionalProperties": false,
+      "if": {
+        "properties": { "location": { "const": "issue" } },
+        "required": ["location"]
+      },
+      "then": {
+        "properties": { "folder": { "const": "none" }, "file_name": { "const": "none" } }
+      },
+      "else": {
+        "properties": { "folder": { "not": { "const": "none" } }, "file_name": { "not": { "const": "none" } } }
+      },
       "properties": {
+        "location": {
+          "enum": ["repository", "issue"],
+          "default": "repository",
+          "description": "Where a feature spec lives: a file of the specs folder, or the body of its issue. Absent means repository."
+        },
         "folder": { "$ref": "#/$defs/nonEmpty" },
         "file_name": { "$ref": "#/$defs/nonEmpty" },
-        "product_context": { "$ref": "#/$defs/nonEmpty" },
+        "product_context": {
+          "description": "The project-wide context agents read on demand: none, or a list of repository paths (from the root), wiki page URLs and external page URLs. A single string is a list of one.",
+          "oneOf": [
+            { "$ref": "#/$defs/nonEmpty" },
+            { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+          ]
+        },
         "format": {
           "type": "object",
           "required": ["status_line", "status_values", "depends_on_line", "checked_line", "sections"],

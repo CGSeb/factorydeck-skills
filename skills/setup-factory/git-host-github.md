@@ -15,6 +15,7 @@ Pass multi-line text as a file (`--body-file <file>`); with a Windows `gh.exe` u
 - **Open blockers**: `gh api repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by --jq '[.[] | select(.state == "open") | .number]'`
 - **Add a blocker**: `gh api -X POST repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by -F issue_id=<id>`, where `<id>` is the blocker's database id: `gh api repos/<owner>/<repo>/issues/<blocker> --jq .id`, not its number.
 - **Create an issue**: `gh issue create --title "<title>" --label <label> --body-file <file>`
+- **Edit an issue body**: `gh issue edit <n> --body-file <file>` (replaces the whole body: read it with **Read an issue** right before).
 - **Comment on an issue**: `gh issue comment <n> --body-file <file>`
 - **Move an issue's labels**: `gh issue edit <n> --remove-label <from> --add-label <to>`
 - **Hand an issue to the person**: `gh issue edit <n> --add-assignee <person>`
@@ -40,6 +41,10 @@ A pull request body containing `Closes #<n>` closes issue `<n>` when it merges.
 
 - **Watch CI**: `gh pr checks <pr> --watch`. « no checks reported » means no CI ran.
 - **Failed CI log**: `gh run view <run id> --log-failed` (the run id is in the failing check's link).
+
+## Wiki
+
+- **Read a wiki page**: read `https://raw.githubusercontent.com/wiki/<owner>/<repo>/<Page>.md` with `curl -fsSL` or the agent's fetch tool, where `<Page>` ends the page URL (`https://github.com/<owner>/<repo>/wiki/<Page>`). It reads the page where it is, nothing is copied. GitHub has no wiki API: this works for a public wiki only; a private wiki's pages are read as external pages, with the agent's own fetch tool or connector, or not at all.
 
 ## Main branch protection
 

@@ -11,6 +11,8 @@ You are the **orchestrator**. You never write feature code: you plan, start one 
 
 `<skill dir>` is the folder of this file: give it to every agent you start, so it can read its role file.
 
+`<spec>` below is where the issue's spec lives, by `specs.location`: the spec file's path (`repository`, or no `location`), linked from the issue body; or `the body of issue #<issue>` (`issue`), read with **Read an issue**. With `issue`, the depends-on line of the issue body names issues (`#12`); a missing one reads as « none ».
+
 Give every agent you start a short description that names its role and its issue as `#<issue>`, and nothing else: `check-spec #<issue>`, `Worker for #<issue>`, `Review #<issue>` (every round), `Ship #<issue>`. Coding agents record that description with the agent's transcript; FactoryDeck reads its role and its issue there, and the branch an agent records is the one it was started from (`<main>`), not its worktree's. Write no `Work item:` line yourself while agents run: your own work is shared among their issues.
 
 ## 0. Check the machine
@@ -50,7 +52,7 @@ Leave each branch's factory folder (`factory/<branch>` in the repository's share
 
 A spec with its checked line was checked with the person: start its worker. Otherwise check it first, on the model for spec checks, so that the questions do not depend on the builder's model: one background agent per issue, all started together, with this prompt:
 
-> Check the spec `<spec path>`, issue #<issue>. Run the `check-spec` skill on it in its « Before a build » mode: the person is not there.
+> Check the spec, <spec>, of issue #<issue>. Run the `check-spec` skill on it in its « Before a build » mode: the person is not there.
 
 - `open: none`: start the worker (step 2).
 - Questions posted: the issue now waits for the person. Tell the person which questions wait, and take the next buildable issue if any. The issue returns to the queue when the person puts the ready label back.
@@ -65,7 +67,7 @@ git fetch origin <main> && git worktree add -b <branch> <worktree path> origin/<
 
 The branch name follows `build.branch_name`. Then start one background agent per issue, all together, on the model for workers, with this prompt:
 
-> You are a build-feature worker. Build issue #<issue> (« <title> »), spec `<spec path>`, in the worktree `<worktree path>` on branch `<branch>`; work only there. Read `<skill dir>/worker.md` and follow it exactly. The issue is already claimed. Finish with the report it describes.
+> You are a build-feature worker. Build issue #<issue> (« <title> »), spec: <spec>, in the worktree `<worktree path>` on branch `<branch>`; work only there. Read `<skill dir>/worker.md` and follow it exactly. The issue is already claimed. Finish with the report it describes.
 
 Keep each worker's id with its issue, its worktree and its branch: you will send it review findings, CI failures and rebase conflicts. While workers run, do not poll them; wait for their reports.
 
@@ -83,7 +85,7 @@ A worker's context grows to hundreds of thousands of tokens, and every call it m
 
 The review runs locally, so CI only runs on work that passed it. Start a **fresh** reviewer, never the worker, on the model for reviewers, with this prompt:
 
-> Review the local branch `<branch>`, worktree `<worktree>`, which builds issue #<issue> (spec `<spec path>`). Read `<skill dir>/reviewer.md` and follow it exactly.
+> Review the local branch `<branch>`, worktree `<worktree>`, which builds issue #<issue> (spec: <spec>). Read `<skill dir>/reviewer.md` and follow it exactly.
 
 Give it nothing else: not the worker's report, not your reasoning. Note the branch's head commit (`git rev-parse <branch>`): it is the start of a second round.
 

@@ -50,8 +50,13 @@ checks:
     manual_start: none
 
 specs:
+  # Where a feature spec lives: repository (a file of the folder below) or issue (the body of its
+  # issue; folder and file_name are then none).
+  location: repository
   folder: docs/specs/
   file_name: NNN-short-name.md
+  # The project-wide context agents read on demand: none, or a list of repository paths (from the
+  # root), wiki page URLs and external page URLs. factory-notes.md says how to read each non-file one.
   product_context: none
   # The exact text this repository uses for each part of a spec.
   format:
