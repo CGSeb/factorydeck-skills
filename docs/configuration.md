@@ -54,6 +54,8 @@ bugs:
 
 A bug report always lives in the body of its issue, whatever `specs.location` says. It reuses the depends-on and checked lines of `specs.format`, and no other key of it. Its title is a plain name, with no number part. A bug issue carries `bugs.label` instead of `issues.labels.spec`, plus the same flow labels as a spec (`ready`, `working`, `review`, `needs_spec`, `blocked`): `build-feature` takes only issues with the spec label, so it never takes a bug.
 
+A bug goes through `report-bug` (the report, with you) → `check-bug` → `fix-bug`. [`check-bug`](../skills/check-bug/SKILL.md) is to a bug report what `check-spec` is to a spec: it writes the checked line once the four sections are filled, the steps can be followed without guessing and the expected behaviour can be asserted by a test. Before a fix, it posts its questions on the issue and moves it to the needs-spec label instead.
+
 ## Requirements
 
 - `git`.
