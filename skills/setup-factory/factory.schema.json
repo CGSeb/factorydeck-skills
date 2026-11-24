@@ -164,6 +164,35 @@
         }
       }
     },
+    "bugs": {
+      "description": "Bug tickets. Absent: the repository does not use the bug skills. A bug report is always the body of its issue; a bug issue carries this label instead of issues.labels.spec, plus the same flow labels. The label must differ from every label of issues.labels, ignoring letter case.",
+      "type": "object",
+      "required": ["label", "branch_name", "pull_request_title", "format"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "$ref": "#/$defs/nonEmpty" },
+        "branch_name": { "$ref": "#/$defs/nonEmpty" },
+        "pull_request_title": { "$ref": "#/$defs/nonEmpty" },
+        "format": {
+          "type": "object",
+          "required": ["sections"],
+          "additionalProperties": false,
+          "properties": {
+            "sections": {
+              "type": "object",
+              "required": ["observed", "expected", "steps", "environment"],
+              "additionalProperties": false,
+              "properties": {
+                "observed": { "$ref": "#/$defs/nonEmpty" },
+                "expected": { "$ref": "#/$defs/nonEmpty" },
+                "steps": { "$ref": "#/$defs/nonEmpty" },
+                "environment": { "$ref": "#/$defs/nonEmpty" }
+              }
+            }
+          }
+        }
+      }
+    },
     "build": {
       "type": "object",
       "required": ["parallel_workers", "branch_name", "commit_convention", "pull_request_title", "auto_merge", "serenity_threshold", "main_branch_protection"],
