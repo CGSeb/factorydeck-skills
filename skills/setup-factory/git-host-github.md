@@ -12,6 +12,7 @@ Pass multi-line text as a file (`--body-file <file>`); with a Windows `gh.exe` u
 
 - **List the queue**: `gh issue list --label <spec> --label <ready> --state open --json number,title --jq 'sort_by(.title)'`
 - **Read an issue**: `gh issue view <n> --json number,title,body,labels,state`
+- **List open issues of a label**: `gh issue list --label <label> --state open --limit 100 --search "sort:updated-desc" --json number,title,body` (the 100 most recently updated)
 - **Open blockers**: `gh api repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by --jq '[.[] | select(.state == "open") | .number]'`
 - **Add a blocker**: `gh api -X POST repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by -F issue_id=<id>`, where `<id>` is the blocker's database id: `gh api repos/<owner>/<repo>/issues/<blocker> --jq .id`, not its number.
 - **Create an issue**: `gh issue create --title "<title>" --label <label> --body-file <file>`
