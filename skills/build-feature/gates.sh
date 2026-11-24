@@ -43,7 +43,9 @@ protected_paths() {
 
 main=$(setting repository main_branch)
 main=${main:-main}
+location=$(setting specs location)
 specs=$(setting specs folder)
+[ "$specs" = none ] && specs=
 status_line=$(sed -n "s/^    status_line:[[:space:]]*['\"]\{0,1\}\([^'\"]*\).*/\1/p" "$config" | head -n 1)
 base="origin/$main"
 
@@ -58,7 +60,9 @@ git diff --numstat "$base...$branch" |
        END { printf "changed: %d files, %d lines (lockfiles and generated files included)\n", files, lines }'
 
 echo "specs touched:"
-if [ -n "$specs" ]; then
+if [ "$location" = issue ]; then
+  echo "  none expected (specs.location: issue): read the closed issue's body for unticked boxes"
+elif [ -n "$specs" ]; then
   git diff --name-only "$base...$branch" -- "$specs" | while read -r spec; do
     status=$(git show "$branch:$spec" 2>/dev/null | grep -m 1 -F "${status_line:-Status:}")
     open=$(git show "$branch:$spec" 2>/dev/null | grep -c '^[[:space:]]*[-*][[:space:]]\[[[:space:]]\]')

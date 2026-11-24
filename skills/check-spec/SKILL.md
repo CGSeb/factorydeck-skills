@@ -9,6 +9,8 @@ A spec is ready to build when an agent can build it without inventing anything a
 
 `docs/agents/factory.yml` gives the spec format (`specs.format`), the labels (`issues.labels`) and the language for people (`people.language`); operations in **bold** are commands of `docs/agents/git-host.md`. It should exist; if not, tell the person to run `/setup-factory` and stop.
 
+With `specs.location: issue`, the spec is the body of its issue: read it with **Read an issue**, and write into it with **Edit an issue body**, reading the body again right before each edit and changing only your own lines (answers, the checked line), so an edit the person made meanwhile is kept. The specs it depends on are the issues its depends-on line names; a missing depends-on line reads as « none », and blocking links still count. Otherwise (`repository`, or no `location`) the spec is a file of `specs.folder`.
+
 It runs in two ways:
 
 - **With the person**, in a session where they invoked it (often right after `write-spec`): ask the questions directly and complete the spec.
@@ -16,7 +18,7 @@ It runs in two ways:
 
 ## 1. Read
 
-Read the spec, the product context, the specs it depends on and the specs already done, then the code and data it relies on: the data model behind each field the criteria show, sample or seed data when a threshold or a bucket depends on real values, and the code the feature will change.
+Read the spec, the product context (each source of `specs.product_context` the way « Product context » of `docs/agents/factory-notes.md` says, only the parts this spec touches), the specs it depends on and the specs already done, then the code and data it relies on: the data model behind each field the criteria show, sample or seed data when a threshold or a bucket depends on real values, and the code the feature will change.
 
 ## 2. List what is open
 
@@ -25,7 +27,9 @@ An open choice is anything the spec does not settle and the builder would have t
 - **What a user sees**: wording of a key fact, units, rounding, order, limits (how many items, which ones first), empty, missing, unknown or error cases, what is shown on a small screen.
 - **What a figure means**: which records count, buckets and thresholds, deduplication, which record wins when there are several.
 - **How it behaves**: URL or command format and parameter names, what survives a reload or a restart, how it interacts with features already built, keyboard and focus.
-- **What other features must agree with**: a convention another spec already set, or one the next specs will need. Reuse a convention a spec already settled and cite it, instead of asking again.
+- **What other features must agree with**: a convention another spec or the product context already set, or one the next specs will need. Reuse a convention a spec or the product context already settled and cite it (the spec, or the source's path or URL, with the quote), instead of asking again.
+
+A spec that lacks a section of `specs.format` a build needs (the acceptance criteria at least: specs written in issues often have only a user story) is open at `behavior` level. With the person, offer to write the section from the spec's text and the answers. Before a build, name the missing section in the comment.
 
 Six sweeps find what a reading misses, because sample data hides them:
 
@@ -71,7 +75,7 @@ When the spec already has an issue (not when `write-spec` runs you: it writes th
 
 ## Before a build
 
-The person is not there and nothing has been built yet. Change no file. Write every question in **one** comment, in the language for people, one numbered question per choice, each with its options and the one you recommend, then:
+The person is not there and nothing has been built yet. Change no file and no issue body. Write every question in **one** comment, in the language for people, one numbered question per choice, each with its options and the one you recommend, then:
 
 1. **Comment on an issue** with it.
 2. **Move an issue's labels** from the working label to the needs-spec label.

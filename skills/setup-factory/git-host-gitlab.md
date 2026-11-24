@@ -15,6 +15,7 @@ Issues, merge requests and CI for this repository live on GitLab. Every operatio
 - **Open blockers**: `glab api projects/:id/issues/<n>/links`, keeping the links whose `link_type` is `is_blocked_by` and whose `state` is `opened`. Blocking links need GitLab Premium or Ultimate; on the free tier there are none, and the spec's depends-on line is the only record of dependencies.
 - **Add a blocker**: `glab issue note <n> --message "/blocked_by #<blocker>"` (a quick action; Premium or Ultimate). On the free tier, skip it: the issue description repeats the spec's depends-on line.
 - **Create an issue**: `glab issue create --title "<title>" --label <label> --description "$(cat <file>)" --yes`
+- **Edit an issue body**: `glab issue update <n> --description "$(cat <file>)"` (replaces the whole description: read it with **Read an issue** right before).
 - **Comment on an issue**: `glab issue note <n> --message "$(cat <file>)"`
 - **Move an issue's labels**: `glab issue update <n> --unlabel <from> --label <to>`
 - **Hand an issue to the person**: `glab issue update <n> --assignee <person>`
@@ -40,6 +41,10 @@ A merge request description containing `Closes #<n>` closes issue `<n>` when it 
 
 - **Watch CI**: `glab ci status --branch <branch> --live`. No pipeline for the branch means no CI ran.
 - **Failed CI log**: list the failed jobs with `glab api "projects/:id/pipelines/<pipeline id>/jobs?scope[]=failed"`, then `glab ci trace <job id>`.
+
+## Wiki
+
+- **Read a wiki page**: `glab api "projects/:id/wikis/<slug>"` (the page's Markdown is its `content` field), where `<slug>` ends the page URL (`…/-/wikis/<slug>`, its `/` written `%2F`). It reads the page where it is, nothing is copied; private wikis work with the logged-in `glab`. A 404 means no such page, or the wiki is turned off.
 
 ## Main branch protection
 

@@ -31,13 +31,13 @@ If the setup or a check fails because a shared service does not answer (`checks.
 
 ## 2. Understand before coding
 
-Read the issue, the spec it links, the product context, and the code and verification features nearby. Turn each acceptance criterion into something you can prove.
+Read the issue and its spec (the file it links, or with `specs.location: issue` the issue body itself), the product context (each source of `specs.product_context` the way « Product context » of `docs/agents/factory-notes.md` says, only the parts your feature touches), and the code and verification features nearby. A product context source you cannot read goes in `unread_context` with the reason; carry on without it. Turn each acceptance criterion into something you can prove.
 
 For each value a user writes (a configuration file, an environment variable, a command or URL parameter), list its edge forms before coding: a relative or `~` path, an empty value or file, two spellings of one value, a duplicate entry. Done when each one has a test, or a line in `scope_limits`.
 
 The orchestrator checked the spec before starting you. A product choice it still leaves open at `behavior` or `data` level (what an action does, what a figure means, what is stored; the levels are in « Severity of a choice » of the `check-spec` skill) is not yours: push your branch if it holds useful work, **Comment on an issue** with your questions (in the language for people, numbered, with the options and the one you recommend), **Move an issue's labels** from the working label to the needs-spec label, **Hand an issue to the person**, and report `needs-spec` with the questions in `blocked_reason`.
 
-Implementation choices a user never sees (a table, a query, a component split) stay yours; write a notable one down in `implementation_notes`, for the reviewer: it costs nothing. A `cosmetic` or `visible` choice the spec leaves open is yours too: settle it, and write it in `product_choices`. If you had to settle a `behavior` or `data` choice, because asking was not possible, write it there as well. Before you write one there, search for the sentence that settles it in your spec's criteria, rules and expected proof, and in each spec it names, by the subject's words rather than by reading them whole. A choice such a sentence settles, or that the plain reading of one settles, is not a product choice: build it and leave it out. Each entry is `{ "level": "cosmetic | visible | behavior | data", "choice": "…", "spec_sentence": "the sentence that leaves it open", "why": "why it was not enough", "specs_searched": ["<spec files>"] }`. Take the higher level when two fit: the reviewer ranks each one again, and the higher level counts. The levels cost the score points, see serenity.md.
+Implementation choices a user never sees (a table, a query, a component split) stay yours; write a notable one down in `implementation_notes`, for the reviewer: it costs nothing. A `cosmetic` or `visible` choice the spec leaves open is yours too: settle it, and write it in `product_choices`. If you had to settle a `behavior` or `data` choice, because asking was not possible, write it there as well. Before you write one there, search for the sentence that settles it in your spec's criteria, rules and expected proof, in each spec it names, and in the product context you read, by the subject's words rather than by reading them whole. A choice such a sentence settles, or that the plain reading of one settles, is not a product choice: build it and leave it out. Each entry is `{ "level": "cosmetic | visible | behavior | data", "choice": "…", "spec_sentence": "the sentence that leaves it open", "why": "why it was not enough", "specs_searched": ["<spec files, #<n> for an issue spec, or product context sources>"] }`. Take the higher level when two fit: the reviewer ranks each one again, and the higher level counts. The levels cost the score points, see serenity.md.
 
 ## 3. Build in small steps
 
@@ -58,7 +58,7 @@ Implementation choices a user never sees (a table, a query, a component split) s
 2. Without one: prove each criterion with a test that asserts it, and with the commands the spec's expected proof names, run for real.
 3. Look at the evidence that proves your criteria.
 4. Once your feature passes, run the end checks once, on a clean tree: the full check command, and the full verification run if there is a verification skill.
-5. In the spec, tick every criterion you proved and set the status to its done value.
+5. In the spec, tick every criterion you proved and set the status to its done value. With `specs.location: issue`, the spec is the issue body: **Read an issue** right before, tick the boxes you proved and change nothing else, then **Edit an issue body**; there is no status line (the merge closes the issue through `Closes #<issue>`), and the diff changes no spec file.
 
 A criterion you could not prove stays unticked, and the spec keeps its ready status.
 
@@ -66,7 +66,7 @@ A criterion you could not prove stays unticked, and the spec keeps its ready sta
 
 Commit following `build.commit_convention` of `docs/agents/factory.yml` and the « Commits » section of `docs/agents/factory-notes.md`. **Do not push**: the orchestrator reviews your local branch first, so CI only runs on reviewed work.
 
-Write the pull request body, in the language for people, to `<factory>/pr-body.md`: `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs and the scope limits. The shipper publishes it as it is, so keep it current each time you report.
+Write the pull request body, in the language for people, to `<factory>/pr-body.md`: `Closes #<issue>`, what changed, how each criterion was proven, where the evidence is, the product choices you made, the findings you rejected and why, the partial proofs, the scope limits and each product context source you could not read. The shipper publishes it as it is, so keep it current each time you report.
 
 Report with `"status": "reviewable"` (section 6) and wait.
 
@@ -90,6 +90,7 @@ End each report with this block, and nothing after it (`pr` is `null` until the 
   "shared_changes": [{ "change": "…", "required_by": "the spec sentence, or null" }],
   "partial_proofs": ["…"],
   "scope_limits": ["…"],
+  "unread_context": [{ "source": "<path or URL>", "reason": "…" }],
   "ci_fix_rounds": 0,
   "flaky_reruns": 0,
   "rejected_findings": [],
