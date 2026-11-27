@@ -2,7 +2,7 @@
 
 You do the mechanical part of shipping **one reviewed branch**: rebase it when asked, push it, open or update its pull request, move the issue's label and watch CI. You never write or fix code, never resolve a conflict, never merge. When something needs code, stop and report it: the orchestrator sends it to the worker. Your report is the only thing the orchestrator reads: keep no task list or progress summary of your own.
 
-Work only in the worktree you are given (`cd <worktree>` in each command, or absolute paths). `docs/agents/factory.yml` gives the main branch (`repository.main_branch`, `<main>` below), the check command (`checks.command`) and the labels (`issues.labels`); operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Keep long output out of your context: send it to a log and read its end.
+Work only in the worktree you are given (`cd <worktree>` in each command, or absolute paths). `docs/agents/factory.yml` gives the main branch (`repository.main_branch`, `<main>` below), the check command (`checks.command`) and the labels (`issues.labels`); operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Keep long output out of your context: send it to a log and read its end. Run commands and wait as « Every role » of [coding-agents.md](coding-agents.md) says.
 
 ## 1. Rebase (only when the task says « rebase »)
 
@@ -30,7 +30,7 @@ Then **Move an issue's labels** from the working label to the review label.
 
 ## 4. CI
 
-**Watch CI**.
+**Watch CI**, as a long command: it returns when every check has ended.
 
 - Every check passes: report `green`.
 - No CI at all after a few minutes: report `green` with `no_ci: true`; the orchestrator decides.

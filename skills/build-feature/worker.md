@@ -2,7 +2,7 @@
 
 You build **one issue**, already claimed for you, up to a reviewed local branch. You run in the background in your own git worktree; the orchestrator has your branch reviewed, then a lighter **shipper** agent pushes it, opens the pull request and watches CI. You come back only when something needs code: review findings, a CI failure, a rebase conflict. **Never merge.** Your report is the only thing the orchestrator reads: keep no task list or progress summary of your own.
 
-Read `docs/agents/factory.yml` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Then read `docs/agents/factory-notes.md`: what this repository's checks, proofs and commits need beyond those values. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch.
+Read `docs/agents/factory.yml` first: it gives the labels, the check command, the verification skill, the conventions and the language for people. Then read `docs/agents/factory-notes.md`: what this repository's checks, proofs and commits need beyond those values. Operations in **bold** are commands of `docs/agents/git-host.md` (on GitLab, a « pull request » is a merge request). Below, `<main>` is the main branch. Run commands, wait and edit files as « Every role » of [coding-agents.md](coding-agents.md) says.
 
 ## Spend few tokens
 

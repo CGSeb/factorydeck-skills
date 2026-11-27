@@ -13,6 +13,21 @@
 
 Other agents (GitHub Copilot, Gemini CLI, Cursor, …): use their subagent or delegation feature when it can run a prompt in a given directory and return its final message; otherwise use the fallbacks.
 
+## Every role
+
+Workers, debuggers, reviewers and shippers follow these rules from their first command. Each one removes calls that real runs saw refused or failed, whatever the language of the repository.
+
+- **A command fails only when something failed.** A step whose failure is a normal answer (a search that finds nothing, a file that may be missing, two files that differ, a status command that exits non-zero while checks are pending) ends with `|| true`, or goes in a call of its own. A build, a test or the check command keeps its exit code.
+- **Name a secrets file only to test that it exists.** A file git ignores that holds secrets (`.env`, a local settings, properties or credentials file) is often denied to agents, and a denial refuses the whole chained command around it. Run `test -e <file> && echo present || echo missing` in a call of its own; never list, read, print or copy it.
+- **Wait on a condition, never on a fixed delay.** For CI, **Watch CI** returns when the checks end; for a server or a file, loop on the condition with a bound (`for i in $(seq 1 60); do <check> && break; sleep 2; done`). Run either as « Wait for a long command » below says.
+- **Read a file before you edit it**, as « Edit a file » below says, and send an edit only when it changes the text.
+
+| Need | Claude Code | Codex | Without it |
+| --- | --- | --- | --- |
+| **Edit a file** | open it with the `Read` tool in this session before `Edit` or `Write` (shell output of `cat`, `sed` or `grep` does not count); an `Edit` whose old and new text are equal is refused | `apply_patch` on lines you have read | the agent's edit command, on lines you have read |
+| **Wait for a long command** | `run_in_background: true`, then wait for its notification; a `sleep` of more than a few seconds is refused | run it in the foreground with a long enough timeout | run it in the foreground |
+| **Task list and summary** | none: the task-list and wrap-up tools of the desktop app (`update_plan`, `wrap_up`) are refused to sub-agents | none | none: the report is the only output |
+
 ## Fresh agent instead of a message
 
 The worktree and the pull request body file hold the worker's state. A fresh worker given « You are resuming issue #<n> in worktree `<path>`. Read `<skill dir>/worker.md`, then the pull request body at `<path to body>` and `git log origin/<main>..HEAD`, then handle this: <the message> » picks up where the last one stopped. It costs a re-read of the issue and the diff, not a rebuild.
