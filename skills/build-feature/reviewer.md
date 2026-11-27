@@ -18,9 +18,9 @@ git diff origin/<main>...<branch>
 
 Read a whole file with `git show <branch>:<path>`, or in the worktree. Then read the spec (the file your task names, or with `specs.location: issue` the issue body, through **Read an issue** of `docs/agents/git-host.md`), the product context (each source of `specs.product_context` the way « Product context » of `docs/agents/factory-notes.md` says, only the parts the diff touches; a source you cannot read goes in `unread_context` with the reason), the instructions file (`AGENTS.md`, or `CLAUDE.md`, and those of each folder the diff touches), the commit messages (`git log origin/<main>..<branch>`), and the pull request body the worker wrote (`pr-body.md` in `"$(git rev-parse --path-format=absolute --git-common-dir)/factory/<branch>"`).
 
-### A second round
+### A later round
 
-When your task names the commit of the first review (« second round, since `<sha>` »), the first round found only `minor` findings: review only what changed since then, `git diff <sha>..<branch>`, with the findings it answers (given in your task). Check that each one is fixed or that its rejection holds, and that the fix breaks nothing around it. Read further only where the fix reaches: do not review the whole branch again.
+When your task names the commit of the previous review (« later round, since `<sha>` »), that round found only `minor` findings: review only what changed since then, `git diff <sha>..<branch>`, with the findings it answers (given in your task). Check that each one is fixed or that its rejection holds, and that the fix breaks nothing around it. Read further only where the fix reaches: do not review the whole branch again.
 
 ## Check
 

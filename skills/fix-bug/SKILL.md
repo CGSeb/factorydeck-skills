@@ -60,7 +60,7 @@ As `build-feature` steps 4 to 7, with these prompts and rules:
 
   > Review the local branch `<branch>`, worktree `<worktree>`, which fixes bug issue #<issue>. The spec is the bug report, the body of issue #<issue>: its expected section is the only acceptance criterion, and the reproduction test the debugger kept must assert it. Read `<skill dir>/reviewer.md` and follow it exactly; it points to `<build dir>/reviewer.md` for the parts it shares.
 
-  Findings go to the debugger, with the same rounds and rules. A `blocker` finding on reproduction means the debugger rewrites the test. Every round runs « Fails on main » of [reviewer.md](reviewer.md) again, the second one included.
+  Findings go to the debugger, with the same rounds and rules. A `blocker` finding on reproduction means the debugger rewrites the test. Every round runs « Fails on main » of [reviewer.md](reviewer.md) again, later ones included.
 - **Ship**: a fresh shipper, on `agents.models.shipper`, told to read `<build dir>/shipper.md`. The pull request title follows `bugs.pull_request_title`, with the subject of the debugger's main commit.
 - **Gates**: [serenity.md](../build-feature/serenity.md), with two gates replaced and two added for a fix, the last two read from the last review's report:
 

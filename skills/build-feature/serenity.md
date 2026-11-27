@@ -37,9 +37,9 @@ Start at **100** and subtract, using the worker's reports, the reviews and the d
 | Signal | Points |
 | --- | --- |
 | Each finding fixed after the first review | −2 |
-| A second review round was needed because the first found a `blocker` or `major` | −15 |
+| A `blocker` or `major` finding in the last review round; or one in an earlier round, unless a later round reviewed the whole branch and found none, with confidence `high` | −15 |
 | Each finding the worker rejected (even if you agree) | −10 |
-| Each `minor` finding still open after the second review (not already counted as rejected) | −2 |
+| Each `minor` finding still open after the last review round (not already counted as rejected) | −2 |
 | Reviewer confidence `medium` / `low` | −10 / −30 |
 | Each product choice the spec did not settle (`product_choices`, `unsettled_choices`, see below) | `cosmetic` −1 (at most −5 in all), `visible` −3 (at most −9 in all), `behavior` −10, `data` −25 |
 | A case not seen in the real app whose tests leave a layer uncovered (`partial_proofs`, see below), once | −5 |

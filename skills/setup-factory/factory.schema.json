@@ -207,6 +207,7 @@
       "additionalProperties": false,
       "properties": {
         "parallel_workers": { "type": "integer", "minimum": 1 },
+        "review_rounds": { "type": "integer", "minimum": 1 },
         "branch_name": { "$ref": "#/$defs/nonEmpty" },
         "commit_convention": { "$ref": "#/$defs/nonEmpty" },
         "pull_request_title": { "$ref": "#/$defs/nonEmpty" },
