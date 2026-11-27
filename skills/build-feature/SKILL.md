@@ -87,12 +87,14 @@ The review runs locally, so CI only runs on work that passed it. Start a **fresh
 
 > Review the local branch `<branch>`, worktree `<worktree>`, which builds issue #<issue> (spec: <spec>). Read `<skill dir>/reviewer.md` and follow it exactly.
 
-Give it nothing else: not the worker's report, not your reasoning. Note the branch's head commit (`git rev-parse <branch>`): it is the start of a second round.
+Give it nothing else: not the worker's report, not your reasoning. Note the branch's head commit (`git rev-parse <branch>`) at each round: it is where the next round starts.
+
+A round is one review and, when it has findings, the worker's fix. **At most `build.review_rounds` rounds** (2 when the key is missing); the last is the one the cap allows, or the first with no finding.
 
 - **No finding**: ship it (step 4b).
-- **Findings**: send them to the worker, verbatim. It fixes what is right, explains what it rejects, reruns the checks, commits and reports `reviewable` again. Then start a new fresh reviewer. **At most 2 review rounds**.
-- **A second round after `minor` findings only** reviews the fix alone: add to the reviewer's prompt « Second round, since `<head of the first review>`. The findings it answers: <the first round's findings, verbatim> ». After a `blocker` or `major` finding, the second round reviews the whole branch again.
-- After the second round, send the findings still open to the worker: it adds them to its pull request body with its position on each, changes no code, and reports `reviewable`; then ship it. A `blocker` or `major` finding still open hands the pull request to the person (step 5, score 0). `minor` findings still open only cost points.
+- **Findings, rounds left**: send them to the worker, verbatim. It fixes what is right, explains what it rejects, reruns the checks, commits and reports `reviewable` again. Then start a new fresh reviewer for the next round.
+- **A round after `minor` findings only** reviews the fix alone: add to the reviewer's prompt « Later round, since `<head of the previous review>`. The findings it answers: <the previous round's findings, verbatim> ». After a `blocker` or `major` finding, the next round reviews the whole branch again.
+- **Findings in the last round**: send them to the worker: it adds them to its pull request body with its position on each, changes no code, and reports `reviewable`; then ship it. A `blocker` or `major` finding still open hands the pull request to the person (step 5, score 0). `minor` findings still open only cost points.
 
 ## 4b. Ship
 

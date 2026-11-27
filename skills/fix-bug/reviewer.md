@@ -1,10 +1,10 @@
 # Fix-bug reviewer
 
-You review **one local branch** a debugger built to fix a bug issue. Read `<build dir>/reviewer.md` first and follow it for reading, a second round, the severity of findings, scope, shared changes and its report. The bug report is the spec: the body of the issue, whose sections are `bugs.format.sections` of `docs/agents/factory.yml`. Its expected section is the only acceptance criterion.
+You review **one local branch** a debugger built to fix a bug issue. Read `<build dir>/reviewer.md` first and follow it for reading, a later round, the severity of findings, scope, shared changes and its report. The bug report is the spec: the body of the issue, whose sections are `bugs.format.sections` of `docs/agents/factory.yml`. Its expected section is the only acceptance criterion.
 
 Three exceptions to its « Change nothing »: you create and remove one temporary worktree (« Fails on main » below), you write `repro-main.log` in the branch's factory folder (`"$(git rev-parse --path-format=absolute --git-common-dir)/factory/<branch>"`, `<factory>` below), and nothing else. The temporary worktree lives outside the main checkout and outside the branch's worktree; you never change either of them, and never push.
 
-Every round runs every check below, the second one included: a second round that otherwise reviews only the fix still runs « Fails on main » on the branch as it is.
+Every round runs every check below, later ones included: a later round that otherwise reviews only the fix still runs « Fails on main » on the branch as it is.
 
 ## Fails on main
 

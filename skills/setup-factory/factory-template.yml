@@ -106,6 +106,8 @@ bugs:
 
 build:
   parallel_workers: 3
+  # Review rounds of a branch before it ships: a review, and the builder's fix when it has findings.
+  review_rounds: 2
   branch_name: "<the repository's branch pattern, with NNN and a short name>"
   # The repository's own commit convention, or none.
   commit_convention: "<the repository's convention | none>"
