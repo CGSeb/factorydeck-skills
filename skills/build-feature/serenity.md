@@ -78,6 +78,14 @@ Gates: all passed. Review: 1 round, confidence high.
 
 Each line ends with where that fact stands now: `Fixed.`, `Declared in the body.` or `Open.` A pull request handed to the person ends with « What you decide »: one line per open choice and per risk the review raised, with the option you recommend. A pull request that merges leaves that section out.
 
+Dashboards read three lines of this report, so they are fixed English words whatever the language for people, each on its own line, copied exactly:
+
+- The heading: `## Serenity: <score>/100 (threshold <threshold>)`, nothing after the closing parenthesis.
+- The gates: `Gates: all passed.` when every gate of step 1 passes, otherwise `Gates: failed: <gate>, <gate>.` with the gate names of the table. A remark about a gate (a base the person chose, a closing link the git host does not record) goes on a line of its own after it, never on this line.
+- The review: `Review: <n> round` or `Review: <n> rounds`, after the gates on the same line.
+
+After posting it, read the comment back and check those three lines before you merge.
+
 ## 4. Merge or hand over
 
 - **Auto-merge on, every gate passes and the score reaches the threshold**: **Comment on a pull request** with the breakdown, then **Merge a pull request** with the configured method, the pull request's title and the head commit you scored. The git host refuses the merge if the branch moved since.
