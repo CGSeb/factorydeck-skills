@@ -19,10 +19,12 @@ Read the product context (`specs.product_context`, each source the way « Produc
 - What do they see: the screens, commands or responses, and their wording when it matters.
 - What is deliberately left out.
 - Which existing specs it builds on.
+- When it adds an API route, a command or a server step: its error answers and which one wins when several apply, what a user gets while a service it needs does not answer, and the limits of what it accepts.
+- When it stores data later specs will fill or read: which fields may be empty, the stored form of what a user types, and what deleting a record removes.
 
 Ground your recommendations in the code, the existing specs and the product context. Reuse a convention an earlier spec or the product context settled instead of asking it again, and cite it.
 
-Too big for one pull request (more than about a day of work for a person, several independent user goals, or criteria spread over several parts of the product that could ship apart, such as a data layer, an interface and a view of it)? Propose a split into several specs with dependencies between them, and write each one. A large pull request also costs its merge score (`build-feature`'s serenity.md), so a person has to merge it. Count on about 2000 changed lines at most, tests and stories included: a spec that adds stored data (a table, a migration), an API and a new screen together usually goes over, so propose one spec for the data and its API, and one for the screen.
+Too big for one pull request (more than about a day of work for a person, several independent user goals, or criteria spread over several parts of the product that could ship apart, such as a data layer, an interface and a view of it)? Propose a split into several specs with dependencies between them, and write each one. A large pull request also costs its merge score (`build-feature`'s serenity.md), so a person has to merge it. Count on about 2000 changed lines at most, tests and stories included: a spec that adds stored data (a table, a migration), an API and a new screen together usually goes over, so propose one spec for the data and its API, and one for the screen. The spec that adds stored data settles its whole contract, columns the later specs fill included: they build on it without reopening it.
 
 ## 2. Write it
 
@@ -32,7 +34,7 @@ With `repository`: next number, one more than the highest in the specs folder; t
 - **Depends-on line**: the numbers of the specs it needs directly (with `issue`, their issue numbers: `#12, #15`), or « none ». Leave out a spec another listed spec already depends on, directly or through others: the chain records it, and the line stays short as specs pile up.
 - **User goal**: one or two sentences, from the user's side.
 - **Acceptance criteria**: one checkbox each (`- [ ] …`). Each one is observable and precise enough to prove with a test or a verification recipe: name the wording, the order, the limits, the empty, missing and error cases.
-- **Rules**: what a figure means, which records count, thresholds, the data it reads.
+- **Rules**: what a figure means, which records count, thresholds (with their unit, and whether the bound itself counts), the data it reads, the stored formats other specs depend on.
 - **Expected proof**: how a builder proves it in the real app (a verification feature, a command and its output).
 - **Out of scope**: what a builder must not build, so they do not ask.
 

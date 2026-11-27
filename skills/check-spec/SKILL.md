@@ -1,6 +1,6 @@
 ---
 name: check-spec
-description: "Check a spec for product choices it leaves open, before anyone builds it. Ranks every choice a user would see or another feature would depend on by severity, asks the person about those that change a behaviour or the data, and writes the answers into the spec. Use at the end of writing a spec, when asked to check, validate or complete a spec, and from build-feature before it starts a builder."
+description: "Check a spec for product choices it leaves open, before anyone builds it. Ranks every choice a user would see or another feature would depend on by severity, asks the person about those that change a behaviour or the data, proposes defaults for the rest, and writes the answers into the spec. Use at the end of writing a spec, when asked to check, validate or complete a spec, and from build-feature before it starts a builder."
 ---
 
 # Check a spec
@@ -31,16 +31,21 @@ An open choice is anything the spec does not settle and the builder would have t
 
 A spec that lacks a section of `specs.format` a build needs (the acceptance criteria at least: specs written in issues often have only a user story) is open at `behavior` level. With the person, offer to write the section from the spec's text and the answers. Before a build, name the missing section in the comment.
 
-Six sweeps find what a reading misses, because sample data hides them:
+These sweeps find what a reading misses, because sample data and the happy path hide them. Run each one; a sweep that finds nothing to settle is done.
 
 - **Missing values**: for each field the criteria show, find where it is stored. If it can be absent, the spec must say what is shown when it is, even when no sample record lacks it.
 - **Coded values**: for each coded field shown (a type, a category, a status), list every value the source or the code allows, not only those in the sample, and check that the spec says how each one is shown.
 - **Values that do not apply**: for each grouped or summary entry (a total, an « other » or « none » bucket, a parent of nested items), list the fields that have no meaning for it. The spec must say what each one shows, distinct from how it shows an unknown value.
-- **Inputs that can grow**: for each input the feature accepts and each collection it returns (a count, a page, a file, a time range, a batch), the spec must give its upper bound and what happens beyond it.
-- **Values a user writes**: for each configuration file, environment variable, command or URL parameter the feature reads, the spec must settle a relative path and a `~` path, an empty value and an empty file, two spellings of one value (a trailing `/`, letter case) and a duplicate entry. A new file format also names how it is parsed: a library the project does not use yet is the person's choice.
+- **Inputs that can grow**: for each input the feature accepts and each collection it returns (a count, a page, a file, a request body, a time range, a batch), the spec must give its upper bound and what happens beyond it.
+- **Values a user writes**: for each configuration file, environment variable, command or URL parameter the feature reads, the spec must settle a relative path and a `~` path, an empty value and an empty file, two spellings of one value (a trailing `/`, letter case) and a duplicate entry. A new file format also names how it is parsed: a library the project does not use yet is the person's choice. For each value a user types that is stored or compared (an email, a name, an identifier), the spec must settle the form stored (trimmed, letter case kept or not), how two spellings compare, and whether it is unique.
 - **Events read from a history**: for each history the feature reads or derives from (label changes, state changes, reports, comments), the spec must settle a repeated event, an event with no matching opposite (a removal with no addition), an event whose subject was deleted or renamed since, and two events at the same time.
+- **Bounds and units**: for each limit the spec names (a duration, a size, a count, a date), it must say whether the bound itself is in or out (« 30 days or more ») and its unit when two readings exist (1 MB in bytes, a day in a time zone).
+- **Malformed requests**: for each API route, command or form the feature adds, the spec must settle a missing field, a field of the wrong type, a body or argument in another format than expected, and an unknown field.
+- **Several answers at once**: for each action that can fail in more than one way, list its failure answers (status, message, exit code); the spec must say which one wins when several apply, and in which order the checks run.
+- **A service that does not answer**: for each service the feature needs (a database, a git host, another API, the network), the spec must settle what a user gets while it does not answer at each moment the feature needs it (at start, during a request, between two steps of a flow), and what happens once it answers again.
+- **State over time**: for each value the feature reads once and keeps (a state read at load, a cached answer), the spec must settle what happens when it changes meanwhile, and what a request sent before it is known gets. For each thing the feature creates (a session, a token, a record, a file), it must settle when it ends, what a second creation does to the first, what a failed attempt leaves, and what is left behind when it ends.
 
-Choices a user never sees (file layout, internal names, query shape, component split) belong to the builder: leave them out.
+Choices a user never sees (file layout, internal names, query shape, component split) belong to the builder: leave them out. What other code or a later spec will read or write is not one of them: a stored format (a hash, an encoding), the columns of a table later specs fill and which may be empty, what deleting a record removes. Rank those `data`.
 
 ### Severity of a choice
 
@@ -50,21 +55,21 @@ Rank each open choice by what happens if the builder gets it wrong, not by its s
 | --- | --- | --- |
 | `cosmetic` | Changes no behaviour and no meaning; fixed in one line | colour, spacing, the wording of a label, an icon |
 | `visible` | The user sees it, but actions and data stay the same; reversible without a migration | default sort, text of an empty state, column order, display rounding |
-| `behavior` | Changes what an action or a flow does | a default that triggers something, confirm or not, what a click chains to, a filtering rule, a URL or command format |
-| `data` | Changes what a figure means, what is stored, or a contract others consume; or cannot be taken back | which records count, a threshold or bucket, a new field or migration, an output format other features read |
+| `behavior` | Changes what an action or a flow does | a default that triggers something, confirm or not, what a click chains to, a filtering rule, a URL or command format, which error answers when several apply |
+| `data` | Changes what a figure means, what is stored, or a contract others consume; or cannot be taken back | which records count, a threshold or bucket, a new field or migration, an output format other features read, a stored format a later spec reads |
 
-Only `behavior` and `data` choices are open: ask them, or post them before a build. A `cosmetic` or `visible` choice is left to the builder, who settles it, declares it with its level and pays a few points of serenity for it; do not ask it, and do not list it as open.
+`behavior` and `data` choices are open: ask them, or post them before a build. `cosmetic` and `visible` choices are settled in one batch of defaults with the person (step 3), because each one the builder settles costs points of serenity; before a build, leave them to the builder, who settles and declares them.
 
-For each open choice, write its level, the options you see and the one you recommend, with one line of why. Ground it in the data and the code you read, not in guesses.
+For each choice, write its level, the options you see and the one you recommend, with one line of why. Ground it in the data and the code you read, not in guesses.
 
-Nothing open at `behavior` or `data` level: say so in one line and stop.
+Nothing open at any level: say so in one line and stop. Before a build, nothing open at `behavior` or `data` level is enough.
 
 ## 3. With the person
 
-Ask the questions directly, in the language for people, a few at a time, recommended option first. Then write each answer into the spec where a builder will look for it, without adding sections the format does not have:
+Ask the `behavior` and `data` questions directly, in the language for people, a few at a time, recommended option first. Then show the `cosmetic` and `visible` choices as one list, each with the value you recommend, and ask the person to accept them all or name the ones to change. Write each answer into the spec where a builder will look for it, without adding sections the format does not have:
 
 - A behaviour a user can observe becomes an **acceptance criterion**, precise enough to be proven by a test or a verification recipe.
-- A rule on the data (which records, buckets, thresholds) goes in the **rules** section.
+- A rule on the data (which records, buckets, thresholds, stored formats) and each accepted default go in the **rules** section, one line each.
 - Something deliberately not built goes in **out of scope**.
 
 Keep the spec's tone and language. Once nothing is left open, add the checked line with today's date (`YYYY-MM-DD`) right under the depends-on line, or update it: `build-feature` then skips the check before building. Then show the person what changed in the spec.
