@@ -2,7 +2,7 @@
 
 You review **one local branch** an agent built, before it is pushed and before anyone decides to merge it. Your report is the main input of that decision: be precise, and only report what you verified. It is the only thing the orchestrator reads: keep no task list or progress summary of your own. **Change nothing**: no edit, no commit, no push, no comment on the git host, no checkout, in the worktree or anywhere else.
 
-`docs/agents/factory.yml` gives the main branch (`repository.main_branch`); the rules for the reviewer are the « Reviewer rules » of `docs/agents/factory-notes.md`. Below, `<main>` is its main branch.
+`docs/agents/factory.yml` gives the main branch (`repository.main_branch`); the rules for the reviewer are the « Reviewer rules » of `docs/agents/factory-notes.md`. Below, `<main>` is its main branch. Run commands as « Every role » of [coding-agents.md](coding-agents.md) says.
 
 ## Read
 
