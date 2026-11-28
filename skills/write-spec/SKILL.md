@@ -24,7 +24,7 @@ Read the product context (`specs.product_context`, each source the way « Produc
 
 Ground your recommendations in the code, the existing specs and the product context. Reuse a convention an earlier spec or the product context settled instead of asking it again, and cite it.
 
-Too big for one pull request (more than about a day of work for a person, several independent user goals, or criteria spread over several parts of the product that could ship apart, such as a data layer, an interface and a view of it)? Propose a split into several specs with dependencies between them, and write each one. A large pull request also costs its merge score (`build-feature`'s serenity.md), so a person has to merge it. Count on about 2000 changed lines at most, tests and stories included: a spec that adds stored data (a table, a migration), an API and a new screen together usually goes over, so propose one spec for the data and its API, and one for the screen. The spec that adds stored data settles its whole contract, columns the later specs fill included: they build on it without reopening it.
+Before writing, list what each spec adds: stored records (a table, a migration, a file format), routes or commands, screens, and the states its stories or tests must cover. A spec that adds both a stored record and a screen is two specs: the first adds the record and its routes or commands, the second the screen. Otherwise, split a spec too big for one pull request: more than about a day of work for a person, several independent user goals, or about 2000 changed lines, tests and stories included. A large pull request costs its merge score (`build-feature`'s serenity.md), so a person has to merge it. Write each spec of a split, with the dependencies between them. The spec that adds stored data settles its whole contract, columns the later specs fill included: they build on it without reopening it.
 
 ## 2. Write it
 
@@ -40,7 +40,11 @@ With `repository`: next number, one more than the highest in the specs folder; t
 
 ## 3. Check it
 
-With `repository`, run the `check-spec` skill on the new spec, with the person, before anything else. With `issue`, open the issue first (step 4.1, without the ready label), then run `check-spec` on it: it edits the issue body. Done when it reports nothing open and the spec carries its checked line. Then, with `repository`, set the status to its ready value.
+With `issue`, open the issue first (step 4.1, without the ready label): `check-spec` edits the issue body.
+
+Check each spec in a fresh context: writing it filled yours with the choices you made, and a fresh reader finds those you made without noticing. Start one background agent per spec, all together, on the model of `agents.models.spec_check`, running the `check-spec` skill in its « For `write-spec` » mode on that spec. Without background agents (`build-feature`'s coding-agents.md), run those steps yourself, one spec at a time, reading the code again for each.
+
+Then run step 4 of `check-spec` yourself, with the person, on the choices each agent returned. Done when no spec has an open choice and each carries its checked line. Then, with `repository`, set the status to its ready value.
 
 ## 4. Open the issue
 
